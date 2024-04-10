@@ -9,7 +9,7 @@ class AccountTransactionController {
       accountTransactionsValues.push({
         amount: 500,
         date: new Date(),
-        transactionType: "Перевод",
+        transactionType: "transfer",
         bankAccountId: bankAccount.id,
         recipientBankAccountId: bankAccount.id,
       });
@@ -20,8 +20,8 @@ class AccountTransactionController {
   async get_transactions(req, res, next) {
     //добавить типизацию
     try {
-      const { id } = req.account;
-      const transactions = await AccountTransaction.findAll({ where: { bankAccountId: id } });
+      const { accountId } = req.body;
+      const transactions = await AccountTransaction.findAll({ where: { bankAccountId: accountId } });
       res.json(transactions);
     } catch (error) {
       console.log(error);
@@ -29,7 +29,63 @@ class AccountTransactionController {
     }
   }
 
-  async transferController(req, res, next) {
+  async deposit(req, res, next) {
+    try {
+      const { accountId, amount } = req.body;
+      const account = await BankAccount.findByPk(accountId);
+
+      if (!account) {
+        return next(ApiError.badRequest("Account not found!"));
+      }
+
+      await account.update({ balance: account.balance + amount });
+
+      await AccountTransaction.create({
+        amount,
+        date: new Date(),
+        transactionType: "deposit",
+        bankAccountId: accountId,
+        recipientBankAccountId: accountId,
+      });
+
+      res.json({ message: "Deposit successful" });
+    } catch (error) {
+      console.error("Deposit failed:", error.message);
+      return next(ApiError.badRequest("Deposit failed!"));
+    }
+  }
+
+  async withdraw(req, res, next) {
+    try {
+      const { accountId, amount } = req.body;
+      const account = await BankAccount.findByPk(accountId);
+
+      if (!account) {
+        return next(ApiError.badRequest("Account not found!"));
+      }
+
+      if (account.balance < amount) {
+        return next(ApiError.badRequest("Insufficient funds!"));
+      }
+
+      await account.update({ balance: account.balance - amount });
+
+      await AccountTransaction.create({
+        amount: -amount,
+        date: new Date(),
+        transactionType: "withdrawal",
+        bankAccountId: accountId,
+        recipientBankAccountId: accountId,
+      });
+
+      res.json({ message: "Withdrawal successful" });
+    } catch (error) {
+      console.error("Withdrawal failed:", error.message);
+      return next(ApiError.badRequest("Withdrawal failed!"));
+    }
+  }
+
+  async performTransfer(req, res, next) {
     try {
       // Получаем данные из запроса
       const { senderAccountId, recipientAccountId, amount } = req.body;
