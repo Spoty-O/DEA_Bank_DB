@@ -17,11 +17,9 @@ import { BankAccount } from "./BankAccount.js";
 import { Client } from "./Client.js";
 
 interface DepartmentAttributes {
-  id: number;
   address: string;
   city: string;
   phone: string;
-  clients: Client[];
 }
 
 @Table({
@@ -40,6 +38,6 @@ export class Department extends Model<DepartmentAttributes> {
   @Column(DataType.STRING(20))
   phone!: string;
 
-  @HasMany(() => Client)
+  @HasMany(() => Client, {onDelete: "CASCADE"})
   clients!: Client[];
 }

@@ -17,14 +17,11 @@ import {
 import { BankAccount } from "./BankAccount.js";
 
 interface AccountTransactionAttributes {
-  id: number;
   amount: number;
   date: Date;
   transactionType: string;
   bankAccountId: number;
-  bankAccount: BankAccount;
   recipientBankAccountId: number;
-  recipientBankAccount: BankAccount;
 }
 
 @Table({

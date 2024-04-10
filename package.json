@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "npx nodemon",
+    "init": "npx tsx ./src/db_init.ts",
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build && node build/index",
     "lint": "npx eslint ./src",
@@ -19,7 +20,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@adminjs/express": "^6.1.0",
+    "adminjs": "^7.8.1",
     "express": "^4.19.2",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.18.0",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.2",
