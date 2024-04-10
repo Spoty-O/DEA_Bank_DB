@@ -39,6 +39,20 @@ export class BankAccount extends Model<BankAccountAttributes> {
   @BelongsTo(() => Client)
   client!: Client;
 
-  @HasMany(() => AccountTransaction, {onDelete: "CASCADE"})
+  @HasMany(() => AccountTransaction, { onDelete: "CASCADE" })
   accountTransactions!: AccountTransaction[];
+
+  async initialize(clients: Client[]): Promise<BankAccount[]> {
+    let bankAccountValues: BankAccountAttributes[] = [];
+    for (const client of clients) {
+      bankAccountValues.push({
+        balance: 1000,
+        clientId: client.id,
+        departmentIdWhereOpen: client.departmentId,
+      });
+    }
+    return await BankAccount.bulkCreate(bankAccountValues);
+  }
 }
+
+export const BankAccountController = new BankAccount()

@@ -53,4 +53,20 @@ export class AccountTransaction extends Model<AccountTransactionAttributes> {
 
   @BelongsTo(() => BankAccount)
   recipientBankAccount!: BankAccount;
+
+  async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
+    let accountTransactionsValues: AccountTransactionAttributes[] = [];
+    for (const bankAccount of bankAccounts) {
+      accountTransactionsValues.push({
+        amount: 500,
+        date: new Date(),
+        transactionType: "Перевод",
+        bankAccountId: bankAccount.id,
+        recipientBankAccountId: bankAccount.id,
+      });
+    }
+    return await AccountTransaction.bulkCreate(accountTransactionsValues)
+  }
 }
+
+export const AccountTransactionController = new AccountTransaction()

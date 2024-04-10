@@ -1,19 +1,11 @@
 import {
   AllowNull,
-  BelongsToMany,
   Column,
-  CreatedAt,
-  Default,
   HasMany,
-  HasOne,
   Model,
   Table,
-  Unique,
-  UpdatedAt,
   DataType,
-  ForeignKey,
 } from "sequelize-typescript";
-import { BankAccount } from "./BankAccount.js";
 import { Client } from "./Client.js";
 
 interface DepartmentAttributes {
@@ -38,6 +30,16 @@ export class Department extends Model<DepartmentAttributes> {
   @Column(DataType.STRING(20))
   phone!: string;
 
-  @HasMany(() => Client, {onDelete: "CASCADE"})
+  @HasMany(() => Client, { onDelete: "CASCADE" })
   clients!: Client[];
+
+  async initialize(): Promise<Department[]> {
+    await Department.destroy({ cascade: true, truncate: true });
+    return await Department.bulkCreate([
+      { address: "123 Main St", city: "New York", phone: "123-456-7890" },
+      { address: "456 Elm St", city: "New York", phone: "456-789-0123" },
+    ]);
+  }
 }
+
+export const DepartmentController = new Department()
