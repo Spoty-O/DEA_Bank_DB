@@ -33,21 +33,29 @@ class AccountTransactionController {
     try {
       // Получаем данные из запроса
       const { senderAccountId, recipientAccountId, amount } = req.body;
+
+      // Находим банковские счета отправителя и получателя
+      const senderAccount = await BankAccount.findByPk(senderAccountId);
+      const recipientAccount = await BankAccount.findByPk(recipientAccountId);
+
+      if (!senderAccount || !recipientAccount) {
+        throw new Error("Sender or recipient account not found");
+      }
+
+      // Проверяем достаточность средств на счете отправителя
+      if (senderAccount.balance < amount) {
+        throw new Error("Insufficient funds");
+      }
+
+      // Получаем экземпляр sequelize
+      const sequelize = BankAccount.sequelize;
+
+      if (!sequelize || !sequelize.transaction) {
+        throw new Error("Unable to start transaction");
+      }
+
       // Начинаем транзакцию
-      await BankAccount.sequelize?.transaction(async (transaction) => {
-        // Находим банковские счета отправителя и получателя
-        const senderAccount = await BankAccount.findByPk(senderAccountId, { transaction });
-        const recipientAccount = await BankAccount.findByPk(recipientAccountId, { transaction });
-
-        if (!senderAccount || !recipientAccount) {
-          throw new Error("Sender or recipient account not found");
-        }
-
-        // Проверяем достаточность средств на счете отправителя
-        if (senderAccount.balance < amount) {
-          throw new Error("Insufficient funds");
-        }
-
+      await sequelize.transaction(async (transaction) => {
         // Обновляем балансы отправителя и получателя
         await senderAccount.update({ balance: senderAccount.balance - amount }, { transaction });
         await recipientAccount.update({ balance: recipientAccount.balance + amount }, { transaction });
@@ -77,10 +85,12 @@ class AccountTransactionController {
         );
       });
 
-      console.log("Transaction successful");
+      // Отправляем успешный ответ
+      res.json({ message: "Transaction successful" });
     } catch (error) {
+      // Обрабатываем ошибку
       console.error("Transaction failed:", error.message);
-      throw error;
+      return next(ApiError.badRequest("Transaction failed!"));
     }
   }
 }
