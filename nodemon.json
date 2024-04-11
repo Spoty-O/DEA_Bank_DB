@@ -3,5 +3,5 @@
     "ext": ".ts,.js",
     "ignore": [],
     "quit": true,
-    "exec": "npx tsx ./src/index.ts"
+    "exec": "npx tsx"
 }

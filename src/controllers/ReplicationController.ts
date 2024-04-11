@@ -11,15 +11,15 @@ class ReplicationController {
 //     ]);
 //   }
 
-  async get(req: Request, res: Response, next: NextFunction) {
-    try {
-      const departments = await Department.findAll();
-      res.json(departments);
-    } catch (error) {
-      console.log(error)
-      return next(ApiError.internal("Error getting departments"));
-    }
-  };
+//   async get(req: Request, res: Response, next: NextFunction) {
+//     try {
+//       const departments = await Department.findAll();
+//       res.json(departments);
+//     } catch (error) {
+//       console.log(error)
+//       return next(ApiError.internal("Error getting departments"));
+//     }
+//   };
 }
 
 export default new ReplicationController();

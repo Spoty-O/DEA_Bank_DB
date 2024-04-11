@@ -1,8 +1,8 @@
 import { Router } from "express";
 import DepartmentController from "../controllers/DepartmentController.js";
-const DepartmentRouter = Router();
+const departmentRouter = Router();
 
-DepartmentRouter.get('/departments', DepartmentController.getDepartments);
+departmentRouter.get('/departments', DepartmentController.getDepartments);
 // router.get('/validation/:id', authMiddleware, authController.email_confirm);
 // router.get('/refresh', authController.handleRefreshToken);
 // router.post('/login', validation(joiUserLoginSchema), authController.login);
@@ -10,4 +10,4 @@ DepartmentRouter.get('/departments', DepartmentController.getDepartments);
 // router.post('/register', validation(joiUserRegisterSchema), authController.register);
 // router.post('/logout', authController.logout);
 
-export default DepartmentRouter;
+export default departmentRouter;

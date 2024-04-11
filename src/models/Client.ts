@@ -1,13 +1,11 @@
-import { AllowNull, Column, HasMany, Model, Table, DataType, ForeignKey, BelongsTo, PrimaryKey } from "sequelize-typescript";
+import { AllowNull, Column, HasMany, Model, Table, DataType, PrimaryKey } from "sequelize-typescript";
 import { BankAccount } from "./BankAccount.js";
-import { Department } from "./Department.js";
 
 export interface ClientAttributes {
   id: string;
   firstName: string;
   lastName: string;
   phone: string;
-  departmentId: number;
 }
 
 @Table({
@@ -29,10 +27,6 @@ export class Client extends Model<ClientAttributes> {
   @AllowNull(false)
   @Column(DataType.STRING(20))
   phone!: string;
-
-  @ForeignKey(() => Department)
-  @Column(DataType.INTEGER)
-  departmentId!: number;
 
   @HasMany(() => BankAccount, { onDelete: "CASCADE" })
   bankAccounts!: BankAccount[];

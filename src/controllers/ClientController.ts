@@ -3,10 +3,10 @@ import { createHash } from "crypto";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
 import { Client, ClientAttributes } from "../models/Client.js";
-import { Department } from "../models/Department.js";
+import { DepartmentAttributes } from "../models/Department.js";
 
 class ClientController {
-  async initialize(departments: Department[]): Promise<Client[]> {
+  async initialize(departments: DepartmentAttributes[]): Promise<Client[]> {
     const clientsValues: ClientAttributes[] = [];
     for (const department of departments) {
       for (let i = 0; i < 5; i++) {
@@ -20,7 +20,6 @@ class ClientController {
           firstName: getRandomName(),
           lastName: getRandomLastName(),
           phone: generateRandomPhoneNumber(),
-          departmentId: department.id,
         });
       }
     }
@@ -61,7 +60,6 @@ class ClientController {
         firstName,
         lastName,
         phone,
-        departmentId,
       });
 
       res.json(client);
@@ -90,7 +88,7 @@ class ClientController {
       const client = await Client.findByPk(id);
       if (!client) return next(ApiError.notFound("Client not found"));
 
-      await Client.update({ firstName, lastName, phone, departmentId }, { where: { id } });
+      await Client.update({ firstName, lastName, phone }, { where: { id } });
 
       res.json(client);
     } catch (error) {
