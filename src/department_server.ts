@@ -34,7 +34,7 @@ const start = async () => {
     await DBController.connectDB();
     app.listen(PORT, () =>
       console.log(
-        `http://${HOST}:${PORT}`,
+        `${process.env.DB_NAME} list on http://${HOST}:${PORT}`,
         // `AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`,
       ),
     );
@@ -54,7 +54,7 @@ process.on("SIGINT", async () => {
   }
 });
 
-nodemon('').on("restart", async () => {
+nodemon("").on("restart", async () => {
   console.log("Shutting down gracefully...");
   try {
     await DBController.disconnectDB();
