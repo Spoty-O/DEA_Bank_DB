@@ -1,24 +1,8 @@
-import {
-  AllowNull,
-  BelongsToMany,
-  Column,
-  CreatedAt,
-  Default,
-  HasMany,
-  HasOne,
-  Model,
-  Table,
-  Unique,
-  UpdatedAt,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-} from "sequelize-typescript";
+import { AllowNull, Column, HasMany, Model, Table, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { AccountTransaction } from "./AccountTransaction.js";
 import { Client } from "./Client.js";
-import { Department } from "./Departments.js";
 
-interface BankAccountAttributes {
+export interface BankAccountAttributes {
   balance: number;
   clientId: number;
   departmentIdWhereOpen: number;
@@ -41,18 +25,4 @@ export class BankAccount extends Model<BankAccountAttributes> {
 
   @HasMany(() => AccountTransaction, { onDelete: "CASCADE" })
   accountTransactions!: AccountTransaction[];
-
-  async initialize(clients: Client[]): Promise<BankAccount[]> {
-    let bankAccountValues: BankAccountAttributes[] = [];
-    for (const client of clients) {
-      bankAccountValues.push({
-        balance: 1000,
-        clientId: client.id,
-        departmentIdWhereOpen: client.departmentId,
-      });
-    }
-    return await BankAccount.bulkCreate(bankAccountValues);
-  }
 }
-
-export const BankAccountController = new BankAccount()

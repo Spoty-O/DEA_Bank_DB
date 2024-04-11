@@ -1,4 +1,5 @@
 import ApiError from "../helpers/ApiErrors.js";
+import { Request, Response, NextFunction } from "express";
 import { AccountTransaction, AccountTransactionAttributes } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
 
@@ -17,7 +18,7 @@ class AccountTransactionController {
     return await AccountTransaction.bulkCreate(accountTransactionsValues);
   }
 
-  async get_transactions(req, res, next) {
+  async get_transactions(req: Request, res: Response, next: NextFunction) {
     //добавить типизацию
     try {
       const { accountId } = req.body;
@@ -29,7 +30,7 @@ class AccountTransactionController {
     }
   }
 
-  async deposit(req, res, next) {
+  async deposit(req: Request, res: Response, next: NextFunction) {
     try {
       const { accountId, amount } = req.body;
       const account = await BankAccount.findByPk(accountId);
@@ -50,12 +51,12 @@ class AccountTransactionController {
 
       res.json({ message: "Deposit successful" });
     } catch (error) {
-      console.error("Deposit failed:", error.message);
+      console.error("Deposit failed:", error);
       return next(ApiError.badRequest("Deposit failed!"));
     }
   }
 
-  async withdraw(req, res, next) {
+  async withdraw(req: Request, res: Response, next: NextFunction) {
     try {
       const { accountId, amount } = req.body;
       const account = await BankAccount.findByPk(accountId);
@@ -80,12 +81,12 @@ class AccountTransactionController {
 
       res.json({ message: "Withdrawal successful" });
     } catch (error) {
-      console.error("Withdrawal failed:", error.message);
+      console.error("Withdrawal failed:", error);
       return next(ApiError.badRequest("Withdrawal failed!"));
     }
   }
 
-  async performTransfer(req, res, next) {
+  async performTransfer(req: Request, res: Response, next: NextFunction) {
     try {
       // Получаем данные из запроса
       const { senderAccountId, recipientAccountId, amount } = req.body;
@@ -145,7 +146,7 @@ class AccountTransactionController {
       res.json({ message: "Transaction successful" });
     } catch (error) {
       // Обрабатываем ошибку
-      console.error("Transaction failed:", error.message);
+      console.error("Transaction failed:", error);
       return next(ApiError.badRequest("Transaction failed!"));
     }
   }

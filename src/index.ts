@@ -4,7 +4,7 @@ import errorHandler from "./middleware/ErrorHandler.js";
 import { AccountTransaction } from "./models/AccountTransaction.js";
 import { BankAccount } from "./models/BankAccount.js";
 import { Client } from "./models/Client.js";
-import { Department } from "./models/Departments.js";
+import { Department } from "./models/Department.js";
 
 const app: Express = express();
 const PORT = 5000;

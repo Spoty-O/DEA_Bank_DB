@@ -1,9 +1,8 @@
 import { AllowNull, Column, HasMany, Model, Table, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
-import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { BankAccount } from "./BankAccount.js";
-import { Department } from "./Departments.js";
+import { Department } from "./Department.js";
 
-interface ClientAttributes {
+export interface ClientAttributes {
   firstName: string;
   lastName: string;
   phone: string;
@@ -30,24 +29,6 @@ export class Client extends Model<ClientAttributes> {
   @Column(DataType.INTEGER)
   departmentId!: number;
 
-  @BelongsTo(() => Department)
-  department!: Department;
-
   @HasMany(() => BankAccount, { onDelete: "CASCADE" })
   bankAccounts!: BankAccount[];
-
-  async initialize(departments: Department[]): Promise<Client[]> {
-    let clientsValues: ClientAttributes[] = [];
-    for (const department of departments) {
-      clientsValues.push({
-        firstName: getRandomName(),
-        lastName: getRandomLastName(),
-        phone: generateRandomPhoneNumber(),
-        departmentId: department.id,
-      });
-    }
-    return await Client.bulkCreate(clientsValues);
-  }
 }
-
-export const ClientController = new Client();

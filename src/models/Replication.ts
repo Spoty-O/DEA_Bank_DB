@@ -1,8 +1,9 @@
 import { AllowNull, Column, Model, Table, DataType, ForeignKey } from "sequelize-typescript";
-import { Department } from "./Departments.js";
+import { Client } from "./Client.js";
+import { Department } from "./Department.js";
 
 interface ReplicationAttributes {
-  userId: string; // hash id
+  userId: number; // hash id
   departmentId: number;
 }
 
@@ -10,10 +11,10 @@ interface ReplicationAttributes {
   timestamps: false,
 })
 export class Replication extends Model<ReplicationAttributes> {
-  @ForeignKey(() => Department)
+  @ForeignKey(() => Client)
   @AllowNull(false)
-  @Column(DataType.STRING(255))
-  userId!: string;
+  @Column(DataType.INTEGER)
+  clientId!: number;
 
   @ForeignKey(() => Department)
   @AllowNull(false)
