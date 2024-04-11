@@ -1,9 +1,27 @@
-import { Sequelize, SequelizeOptions } from "sequelize-typescript";
+import { ModelCtor, Sequelize } from "sequelize-typescript";
 
 export default class DataBaseController {
   sequelize: Sequelize;
-  constructor(options: SequelizeOptions | undefined) {
-    this.sequelize = new Sequelize(options);
+  constructor(
+    database: string | undefined,
+    username: string | undefined,
+    password: string | undefined,
+    host: string | undefined,
+    models: string[] | ModelCtor[] | undefined,
+  ) {
+    this.sequelize = new Sequelize({
+      database,
+      dialect: "postgres",
+      username,
+      password,
+      host,
+      port: 5432,
+      models, // or [Player, Team],
+      pool: {
+        idle: 10000,
+        acquire: 30000,
+      },
+    });
   }
 
   async connectDB(): Promise<void> {

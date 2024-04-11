@@ -41,8 +41,9 @@ class BankAccountController {
       }
 
       const bankAccount = await BankAccount.create({
-        balance,
-        clientId,
+        id: createHash("sha1").update(clientId).digest("hex"),
+        balance: balance,
+        clientId: clientId,
       });
 
       res.json(bankAccount);

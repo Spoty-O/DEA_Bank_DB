@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express, { Express } from "express";
 import nodemon from "nodemon";
-import DataBaseController from "./db_connect.js";
+import DataBaseController from "./controllers/DataBaseController.js";
 import errorHandler from "./middleware/ErrorHandler.js";
 import cors from "cors";
 import departmentServerRoutes from "./routes/DepartmentServerRoutes.js";

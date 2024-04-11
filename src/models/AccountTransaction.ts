@@ -5,8 +5,8 @@ export interface AccountTransactionAttributes {
   amount: number;
   date: Date;
   transactionType: string;
-  bankAccountId: number;
-  recipientBankAccountId: number;
+  bankAccountId: string;
+  recipientBankAccountId: string;
 }
 
 @Table({
@@ -26,15 +26,15 @@ export class AccountTransaction extends Model<AccountTransactionAttributes> {
   transactionType!: string;
 
   @ForeignKey(() => BankAccount)
-  @Column(DataType.INTEGER)
-  bankAccountId!: number;
+  @Column(DataType.STRING(40))
+  bankAccountId!: string;
 
   @BelongsTo(() => BankAccount)
   bankAccount!: BankAccount;
 
   @ForeignKey(() => BankAccount)
-  @Column(DataType.INTEGER)
-  recipientBankAccountId!: number;
+  @Column(DataType.STRING(40))
+  recipientBankAccountId!: string;
 
   @BelongsTo(() => BankAccount)
   recipientBankAccount!: BankAccount;

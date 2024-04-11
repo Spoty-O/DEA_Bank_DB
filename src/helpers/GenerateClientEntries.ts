@@ -1,13 +1,11 @@
-function getRandomInt(min: number, max: number) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max); // Максимум и минимум включаются
 }
 
 // Функция для генерации случайной комбинации имени и фамилии
 function getRandomName(): string {
   const names = ["John", "Jane", "Michael", "Emily", "William", "Jessica", "David", "Sarah", "Daniel", "Olivia"];
-  const randomNameIndex = getRandomInt(0, names.length - 1);
+  const randomNameIndex = getRandomInt(names.length);
 
   const randomFirstName = names[randomNameIndex];
 
@@ -16,7 +14,7 @@ function getRandomName(): string {
 
 function getRandomLastName(): string {
   const lastNames = ["Doe", "Smith", "Williams", "Brown", "Taylor", "Wilson", "Johnson", "Miller", "Jones", "Davis"];
-  const randomLastNameIndex = getRandomInt(0, lastNames.length - 1);
+  const randomLastNameIndex = getRandomInt(lastNames.length);
 
   const randomLastName = lastNames[randomLastNameIndex];
 
