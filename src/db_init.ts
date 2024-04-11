@@ -1,8 +1,8 @@
 import { ModelCtor } from "sequelize-typescript";
-// import AccountTransactionController from "./controllers/AccountTransactionController.js";
-// import BankAccountController from "./controllers/BankAccountController.js";
-// import ClientController from "./controllers/ClientController.js";
-// import DepartmentsController from "./controllers/DepartmentController.js";
+import AccountTransactionController from "./controllers/AccountTransactionController.js";
+import BankAccountController from "./controllers/BankAccountController.js";
+import ClientController from "./controllers/ClientController.js";
+import DepartmentsController from "./controllers/DepartmentController.js";
 import DataBaseController from "./controllers/DataBaseController.js";
 import { AccountTransaction } from "./models/AccountTransaction.js";
 import { BankAccount } from "./models/BankAccount.js";
@@ -25,7 +25,7 @@ async function databaseInitialize() {
   }
   console.log(models_init);
   const DBController = new DataBaseController(
-    process.env.npm_config_DBname,
+    process.argv[2],
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     process.env.DB_HOST,
@@ -34,13 +34,13 @@ async function databaseInitialize() {
   try {
     await DBController.connectDB();
     await DBController.sequelize.sync({ force: true });
-    // if (regex.test(process.argv[2])) {
-    //   const clients = await ClientController.initialize();
-    //   const bankAccounts = await BankAccountController.initialize(clients);
-    //   await AccountTransactionController.initialize(bankAccounts);
-    // } else {
-    //   await DepartmentsController.initialize();
-    // }
+    if (regex.test(process.argv[2])) {
+      const clients = await ClientController.initialize();
+      const bankAccounts = await BankAccountController.initialize(clients);
+      await AccountTransactionController.initialize(bankAccounts);
+    } else {
+      await DepartmentsController.initialize();
+    }
     await DBController.disconnectDB();
   } catch (error) {
     console.log(error);
