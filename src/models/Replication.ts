@@ -3,7 +3,7 @@ import { Client } from "./Client.js";
 import { Department } from "./Department.js";
 
 interface ReplicationAttributes {
-  userId: number; // hash id
+  clientId: string; // hash id
   departmentId: number;
 }
 
@@ -13,8 +13,8 @@ interface ReplicationAttributes {
 export class Replication extends Model<ReplicationAttributes> {
   @ForeignKey(() => Client)
   @AllowNull(false)
-  @Column(DataType.INTEGER)
-  clientId!: number;
+  @Column(DataType.STRING(40))
+  clientId!: string;
 
   @ForeignKey(() => Department)
   @AllowNull(false)

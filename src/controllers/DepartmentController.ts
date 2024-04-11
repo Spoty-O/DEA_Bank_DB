@@ -1,4 +1,5 @@
 import ApiError from "../helpers/ApiErrors.js";
+import { Request, Response, NextFunction } from "express";
 import { Department } from "../models/Department.js";
 
 class DepartmentsController {
@@ -9,6 +10,16 @@ class DepartmentsController {
       { address: "456 Elm St", city: "New York", phone: "456-789-0123" },
     ]);
   }
+
+  async getDepartments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const departments = await Department.findAll();
+      res.json(departments);
+    } catch (error) {
+      console.log(error)
+      return next(ApiError.internal("Error getting departments"));
+    }
+  };
 }
 
 export default new DepartmentsController();

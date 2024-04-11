@@ -4,7 +4,7 @@ import { Client } from "./Client.js";
 
 export interface BankAccountAttributes {
   balance: number;
-  clientId: number;
+  clientId: string;
   departmentIdWhereOpen: number;
 }
 
@@ -15,10 +15,10 @@ export class BankAccount extends Model<BankAccountAttributes> {
   @AllowNull(false)
   @Column(DataType.FLOAT(15, 2))
   balance!: number;
-
+  
   @ForeignKey(() => Client)
-  @Column(DataType.INTEGER)
-  clientId!: number;
+  @Column(DataType.STRING(40))
+  clientId!: string;
 
   @BelongsTo(() => Client)
   client!: Client;

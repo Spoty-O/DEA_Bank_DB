@@ -1,4 +1,5 @@
 import ApiError from "../helpers/ApiErrors.js";
+import { createHash } from "crypto";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Client, ClientAttributes } from "../models/Client.js";
 import { Department } from "../models/Department.js";
@@ -8,7 +9,12 @@ class ClientController {
     const clientsValues: ClientAttributes[] = [];
     for (const department of departments) {
       for (let i = 0; i < 5; i++) {
+        const firstName = getRandomName();
+        const lastName = getRandomLastName();
+        const phone = generateRandomPhoneNumber();
+        const hashValue = firstName + lastName + phone;
         clientsValues.push({
+          id: createHash('sha1').update(hashValue).digest('hex'),
           firstName: getRandomName(),
           lastName: getRandomLastName(),
           phone: generateRandomPhoneNumber(),

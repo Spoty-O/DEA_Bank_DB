@@ -5,6 +5,7 @@ import { AccountTransaction } from "./models/AccountTransaction.js";
 import { BankAccount } from "./models/BankAccount.js";
 import { Client } from "./models/Client.js";
 import { Department } from "./models/Department.js";
+import mainServerRoutes from "./routes/MainServerRoutes.js";
 
 const app: Express = express();
 const PORT = 5000;
@@ -24,13 +25,8 @@ const DBController = new DataBaseController({
   },
 });
 
+app.use("/api", mainServerRoutes);
 app.use(errorHandler);
-
-app.get("/", async (req: Request, res: Response) => {
-  const clients = await Client.findAll({});
-  console.log(clients);
-  res.send(clients);
-});
 
 const start = async () => {
   try {
