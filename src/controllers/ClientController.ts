@@ -27,7 +27,7 @@ class ClientController {
     return await Client.bulkCreate(clientsValues);
   }
 
-  getClient = async (req: Request, res: Response, next: NextFunction) => {
+  async getClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const client = await Client.findByPk(id);
@@ -39,9 +39,9 @@ class ClientController {
       console.log(error);
       return next(ApiError.internal("Error getting client"));
     }
-  };
+  }
 
-  createClient = async (req: Request, res: Response, next: NextFunction) => {
+  async createClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, phone, departmentId } = req.body;
 
@@ -69,9 +69,9 @@ class ClientController {
       console.log(error);
       return next(ApiError.internal("Error creating client"));
     }
-  };
+  }
 
-  updateClient = async (req: Request, res: Response, next: NextFunction) => {
+  async updateClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { firstName, lastName, phone, departmentId } = req.body;
@@ -97,7 +97,7 @@ class ClientController {
       console.log(error);
       return next(ApiError.internal("Error updating client"));
     }
-  };
+  }
 }
 
 export default new ClientController();
