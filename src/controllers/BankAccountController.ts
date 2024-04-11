@@ -19,9 +19,18 @@ class BankAccountController {
 
   async getBankAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      let bankAccount;
+      const { id, clientId } = req.query;
       console.log(`id = ${id}`);
-      const bankAccount = await BankAccount.findByPk(id);
+
+      if (typeof id === "string") {
+        bankAccount = await BankAccount.findOne({ where: { id } });
+      } else if (typeof clientId === "string") {
+        bankAccount = await BankAccount.findOne({ where: { clientId } });
+      } else {
+        return next(ApiError.badRequest("id or clientId is required"));
+      }
+
       if (!bankAccount) {
         return next(ApiError.notFound("Bank account not found"));
       }
@@ -38,6 +47,11 @@ class BankAccountController {
 
       if (!balance || !clientId) {
         return next(ApiError.badRequest("balance, clientId are required"));
+      }
+
+      const client = await Client.findOne({ where: { id: clientId } });
+      if (!client) {
+        return next(ApiError.notFound("Client not found"));
       }
 
       const bankAccount = await BankAccount.create({
@@ -58,17 +72,21 @@ class BankAccountController {
       const { id } = req.params;
       const { balance, clientId } = req.body;
 
+      if (!balance || !clientId) {
+        return next(ApiError.badRequest("balance, clientId are required"));
+      }
+
       const bankAccount = await BankAccount.findByPk(id);
       if (!bankAccount) {
         return next(ApiError.notFound("Bank account not found"));
       }
 
-      await bankAccount.update({
+      const result = await bankAccount.update({
         balance,
         clientId,
       });
 
-      res.json(bankAccount);
+      res.json(result);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error updating bank account"));
