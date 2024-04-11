@@ -19,7 +19,8 @@ const DBController = new DataBaseController(
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   process.env.DB_HOST,
-  [Client, BankAccount, AccountTransaction]);
+  [Client, BankAccount, AccountTransaction],
+);
 
 app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
