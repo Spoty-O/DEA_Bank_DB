@@ -3,32 +3,40 @@ import { createHash } from "crypto";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
 import { Client, ClientAttributes } from "../models/Client.js";
-import { DepartmentAttributes } from "../models/Department.js";
 
 class ClientController {
-  async initialize(departments: DepartmentAttributes[]): Promise<Client[]> {
+  async initialize(): Promise<Client[]> {
     const clientsValues: ClientAttributes[] = [];
-    for (const department of departments) {
-      for (let i = 0; i < 5; i++) {
-        const firstName = getRandomName();
-        const lastName = getRandomLastName();
-        const phone = generateRandomPhoneNumber();
-        clientsValues.push({
-          id: createHash("sha1")
-            .update(firstName + lastName + phone)
-            .digest("hex"),
-          firstName: getRandomName(),
-          lastName: getRandomLastName(),
-          phone: generateRandomPhoneNumber(),
-        });
-      }
+    for (let i = 0; i < 5; i++) {
+      const firstName = getRandomName();
+      const lastName = getRandomLastName();
+      const phone = generateRandomPhoneNumber();
+      clientsValues.push({
+        id: createHash("sha1")
+          .update(firstName + lastName + phone)
+          .digest("hex"),
+        firstName: getRandomName(),
+        lastName: getRandomLastName(),
+        phone: generateRandomPhoneNumber(),
+      });
     }
     return await Client.bulkCreate(clientsValues);
+  }
+
+  async getAllClients(req: Request, res: Response, next: NextFunction) {
+    try {
+      const clients = await Client.findAll();
+      res.json(clients);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting clients"));
+    }
   }
 
   async getClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      console.log(`id = ${id}`);
       const client = await Client.findByPk(id);
       if (!client) {
         return next(ApiError.notFound("Client not found"));
@@ -42,10 +50,10 @@ class ClientController {
 
   async createClient(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName, phone, departmentId } = req.body;
-
-      if (!firstName || !lastName || !phone || !departmentId) {
-        return next(ApiError.badRequest("firstName, lastName, phone, departmentId are required"));
+      const { firstName, lastName, phone } = req.body;
+      console.log(firstName, lastName, phone);
+      if (!firstName || !lastName || !phone) {
+        return next(ApiError.badRequest("firstName, lastName, phone are required"));
       }
 
       const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
@@ -72,12 +80,12 @@ class ClientController {
   async updateClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { firstName, lastName, phone, departmentId } = req.body;
+      const { firstName, lastName, phone } = req.body;
 
       if (!id) return next(ApiError.badRequest("clientId is required"));
 
-      if (!firstName || !lastName || !phone || !departmentId) {
-        return next(ApiError.badRequest("firstName, lastName, phone, departmentId are required"));
+      if (!firstName || !lastName || !phone) {
+        return next(ApiError.badRequest("firstName, lastName, phone are required"));
       }
 
       const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;

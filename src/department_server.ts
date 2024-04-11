@@ -1,12 +1,14 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 import express, { Express } from "express";
 import nodemon from "nodemon";
 import DataBaseController from "./db_connect.js";
 import errorHandler from "./middleware/ErrorHandler.js";
-import { Department } from "./models/Department.js";
-import { Replication } from "./models/Replication.js";
-import mainServerRoutes from "./routes/MainServerRoutes.js";
+import cors from "cors";
+import departmentServerRoutes from "./routes/DepartmentServerRoutes.js";
+import { AccountTransaction } from "./models/AccountTransaction.js";
+import { BankAccount } from "./models/BankAccount.js";
+import { Client } from "./models/Client.js";
 
 const app: Express = express();
 const PORT = 5000;
@@ -19,14 +21,20 @@ const DBController = new DataBaseController({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: 5432,
-  models: [Department, Replication], // or [Player, Team],
+  models: [Client, BankAccount, AccountTransaction], // or [Player, Team],
   pool: {
     idle: 10000,
     acquire: 30000,
   },
 });
 
-app.use("/api", mainServerRoutes);
+app.use(cors({ origin: "*", credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.get("/", (req, res) => {
+  res.send("asd");
+});
+app.use("/api", departmentServerRoutes);
 app.use(errorHandler);
 
 const start = async () => {

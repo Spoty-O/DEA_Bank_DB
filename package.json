@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev_main": "npx nodemon ./src/main_server.ts",
+    "dev_department": "npx nodemon ./src/department_server.ts",
     "init_DEA_BANK": "set DB_NAME=DEA_BANK&& npx tsx ./src/db_init.ts",
     "init_Dep_1": "set DB_NAME=Department1&& npx tsx ./src/db_init.ts",
     "init_Dep_2": "set DB_NAME=Department2&& npx tsx ./src/db_init.ts",
@@ -24,8 +25,10 @@
   "license": "ISC",
   "dependencies": {
     "@adminjs/express": "^6.1.0",
+    "@types/cors": "^2.8.17",
     "adminjs": "^7.8.1",
     "axios": "^1.6.8",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-formidable": "^1.2.0",

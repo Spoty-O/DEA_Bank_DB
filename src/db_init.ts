@@ -18,12 +18,12 @@ async function databaseInitialize() {
   } else {
     models_init = [Department, Replication];
   }
-  console.log(models_init)
+  console.log(models_init);
   const DBController = new DataBaseController({
     database: process.env.DB_NAME,
     dialect: "postgres",
     username: "postgres",
-    password: "1234",
+    password: "root",
     host: "localhost",
     port: 5432,
     models: models_init, // or [Player, Team],
@@ -33,14 +33,16 @@ async function databaseInitialize() {
     },
   });
   await DBController.connectDB();
-  await Department.destroy({cascade: true, truncate: true, restartIdentity: true})
-  const departments = await DepartmentsController.initialize();
   if (regex.test(process.env.DB_NAME)) {
-    await Client.destroy({cascade: true, truncate: true, restartIdentity: true})
-    const clients = await ClientController.initialize(departments);
+    await Client.destroy({ cascade: true, truncate: true, restartIdentity: true });
+    await Client.drop({cascade: true});
+    const clients = await ClientController.initialize();
     const bankAccounts = await BankAccountController.initialize(clients);
     await AccountTransactionController.initialize(bankAccounts);
   }
+  await Department.destroy({ cascade: true, truncate: true, restartIdentity: true });
+  // await Department.drop({cascade: true});
+  await DepartmentsController.initialize();
   await DBController.disconnectDB();
 }
 databaseInitialize();
