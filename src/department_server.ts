@@ -11,7 +11,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app: Express = express();
-const PORT = 5000;
+const PORT = 5001;
 const HOST = "localhost";
 
 const DBController = new DataBaseController(

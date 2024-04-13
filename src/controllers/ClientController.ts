@@ -33,11 +33,26 @@ class ClientController {
     }
   }
 
-  async getClient(req: Request, res: Response, next: NextFunction) {
+  async getClientById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       console.log(`id = ${id}`);
       const client = await Client.findByPk(id);
+      if (!client) {
+        return next(ApiError.notFound("Client not found"));
+      }
+      res.json(client);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  async getClientByName(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { firstName, lastName } = req.params;
+      // console.log(`id = ${id}`);
+      const client = await Client.findOne({where: {firstName, lastName}});
       if (!client) {
         return next(ApiError.notFound("Client not found"));
       }

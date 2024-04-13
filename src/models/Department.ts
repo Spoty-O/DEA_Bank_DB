@@ -5,6 +5,7 @@ export interface DepartmentAttributes {
   address: string;
   city: string;
   phone: string;
+  domain: string;
 }
 
 @Table({
@@ -22,6 +23,10 @@ export class Department extends Model<DepartmentAttributes> {
   @AllowNull(false)
   @Column(DataType.STRING(20))
   phone!: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING(100))
+  domain!: string;
 
   @HasMany(() => Replication, { onDelete: "CASCADE" })
   replications!: Replication[];
