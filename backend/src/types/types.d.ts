@@ -1,5 +1,5 @@
 interface DepartmentAttributes {
-  id: number;
+  [id: string]: number;
   address: string;
   city: string;
   phone: string;
@@ -8,14 +8,14 @@ interface DepartmentAttributes {
 
 interface ReplicationAttributes {
   id: number;
-  clientId: string; // hash id
+  [clientId: string]: string; // hash id
   firstName: string;
   lastName: string;
   departmentId: number;
 }
 
 interface ClientAttributes {
-  id: string;
+  [id: string]: string;
   firstName: string;
   lastName: string;
   phone: string;
@@ -33,7 +33,7 @@ interface AccountTransactionAttributes {
 interface BankAccountAttributes {
   id: string;
   balance: number;
-  clientId: string;
+  [clientId: string]: string;
 }
 
 export {
