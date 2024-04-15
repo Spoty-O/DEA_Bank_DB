@@ -1,13 +1,7 @@
 import { Router } from "express";
+import mainServerRouter from "./MainServerRoute.js";
 const mainServerRoutes = Router();
 
-// const authRouter = require('./authRouter');
-// const imagesRouter = require('./imagesRouter');
-// const userRouter = require('./userRouter');
-
-// router.use('/auth', authRouter);
-// router.use('/images', imagesRouter);
-// router.use('/user', userRouter);
-
+mainServerRoutes.use('/client', mainServerRouter);
 
 export default mainServerRoutes;
