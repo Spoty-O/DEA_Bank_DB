@@ -18,9 +18,11 @@ class MainServerController {
 
   async getUserFromDepartments(req: Request, res: Response, next: NextFunction) {
     try {
-      const { domain } = req.department;
-      const { clientId } = req.replicationData;
-      const { data } = await axios.get<Client>(domain + "/clients", { params: { id: clientId } });
+      const { firstName, lastName } = req.body;
+      const { data } = await Promise.allSettled([
+        
+      ])
+      await axios.get<Client>(domain + "/clients", { params: { id: clientId } });
       return res.json(data);
     } catch (error) {
       console.log(error);

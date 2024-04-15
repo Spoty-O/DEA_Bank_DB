@@ -9,7 +9,7 @@ class ReplicationController {
       const { firstName, lastName } = req.body;
       const replicationData = await Replication.findOne({ where: { firstName, lastName } });
       if (!replicationData) {
-        return next(ApiError.notFound("User not found"));
+        return next(MainServerController.getUserFromDepartments);
       }
       const departmentByUser = await replicationData.getDepartment();
       if (!departmentByUser) {
