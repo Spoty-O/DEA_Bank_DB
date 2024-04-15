@@ -1,14 +1,14 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query';
-import { IClientData, IClientsList } from '../models/types';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { IClientData } from '../models/types';
 
 export const API = createApi({
-  reducerPath: 'API',
+  reducerPath: 'baseAPI',
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_SERVER_API_DOMEN,
   }),
   endpoints: (build) => ({
     // Получение списка клиентов
-    getClients: build.query<IClientsList, number>({
+    getClients: build.query<IClientData[], number>({
       query: (page) => ({
         url: 'clients',
         method: 'GET',
@@ -21,7 +21,7 @@ export const API = createApi({
         return endpointName;
       },
       merge: (currentCache, newItems) => {
-        currentCache.results.push(...newItems.results);
+        currentCache.push(...newItems);
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;

@@ -5,8 +5,4 @@ interface IClientData {
   phone: string;
 }
 
-interface IClientsList {
-  results: { name: string }[];
-}
-
-export type { IClientData, IClientsList };
+export type { IClientData };
