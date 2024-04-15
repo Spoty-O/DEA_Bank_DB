@@ -1,11 +1,11 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import { AccountTransaction, AccountTransactionAttributes } from "../models/AccountTransaction.js";
+import { AccountTransaction, AccountTransactionCreationAttributes } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
-    const accountTransactionsValues: AccountTransactionAttributes[] = [];
+    const accountTransactionsValues: AccountTransactionCreationAttributes[] = [];
     for (const bankAccount of bankAccounts) {
       accountTransactionsValues.push({
         amount: 500,

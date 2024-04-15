@@ -1,28 +1,34 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import { Replication } from "../models/Replication.js";
 import axios from "axios";
+import { Client } from "../models/Client.js";
 
 class MainServerController {
-  async getUserByName(req: Request, res: Response, next: NextFunction) {
+  async getUserFromDepartment(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName } = req.body;
-      const user = await Replication.findOne({ where: { firstName, lastName } });
-      if (!user) {
-        return next(ApiError.badRequest("User not found"));
-      }
-      const { domain } = await user.getDepartment();
-      const result = await Promise.all([
-        axios.get(domain + "/clients", { params: { id: user.id } }),
-        axios.get(domain + "/balance", { params: { clientId: user.id } }),
-        axios.get(domain + "/transactions", { params: { accountId: user.id } }),
-      ]);
-      return res.json(result);
+      const { domain } = req.department;
+      const { clientId } = req.replicationData;
+      const { data } = await axios.get<Client>(domain + "/clients", { params: { id: clientId } });
+      return res.json(data);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));
     }
   }
+
+  async getUserFromDepartments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { domain } = req.department;
+      const { clientId } = req.replicationData;
+      const { data } = await axios.get<Client>(domain + "/clients", { params: { id: clientId } });
+      return res.json(data);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  // async getUserF
 }
 
 export default new MainServerController();

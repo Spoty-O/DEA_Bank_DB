@@ -1,8 +1,9 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { BankAccount, BankAccountAttributes } from "../models/BankAccount.js";
+import { BankAccount } from "../models/BankAccount.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { createHash } from "crypto";
+import { BankAccountAttributes } from "../types/types.js";
 
 class BankAccountController {
   async initialize(clients: Client[]): Promise<BankAccount[]> {

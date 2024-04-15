@@ -2,7 +2,8 @@ import ApiError from "../helpers/ApiErrors.js";
 import { createHash } from "crypto";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
-import { Client, ClientAttributes } from "../models/Client.js";
+import { Client } from "../models/Client.js";
+import { ClientAttributes } from "../types/types.js";
 
 class ClientController {
   async initialize(): Promise<Client[]> {

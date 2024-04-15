@@ -45,7 +45,7 @@ const start = async () => {
   }
 };
 
-process.on("SIGINT", async () => {
+async function gracefulShutdown() {
   console.log("Shutting down gracefully...");
   try {
     await DBController.disconnectDB();
@@ -54,17 +54,10 @@ process.on("SIGINT", async () => {
     console.error("Error during graceful shutdown:", error);
     process.exit(1); // Выходим с ненулевым кодом в случае ошибки
   }
-});
+}
 
-nodemon("").on("restart", async () => {
-  console.log("Shutting down gracefully...");
-  try {
-    await DBController.disconnectDB();
-    process.exit(0); // Выходим с кодом успешного завершения
-  } catch (error) {
-    console.error("Error during graceful shutdown:", error);
-    process.exit(1); // Выходим с ненулевым кодом в случае ошибки
-  }
-});
+process.on("SIGINT", gracefulShutdown);
+
+nodemon("").on("restart", gracefulShutdown);
 
 start();

@@ -1,12 +1,6 @@
 import { AllowNull, Column, HasMany, Model, Table, DataType, PrimaryKey } from "sequelize-typescript";
 import { BankAccount } from "./BankAccount.js";
-
-export interface ClientAttributes {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-}
+import { ClientAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,

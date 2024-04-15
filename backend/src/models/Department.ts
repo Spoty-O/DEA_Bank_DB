@@ -1,17 +1,14 @@
 import { AllowNull, Column, HasMany, Model, Table, DataType } from "sequelize-typescript";
 import { Replication } from "./Replication.js";
+import { Optional } from "sequelize";
+import { DepartmentAttributes } from "../types/types.js";
 
-export interface DepartmentAttributes {
-  address: string;
-  city: string;
-  phone: string;
-  domain: string;
-}
+export interface DepartmentCreationAttributes extends Optional<DepartmentAttributes, "id"> {}
 
 @Table({
   timestamps: false,
 })
-export class Department extends Model<DepartmentAttributes> {
+export class Department extends Model<DepartmentAttributes, DepartmentCreationAttributes> {
   @AllowNull(false)
   @Column(DataType.STRING)
   address!: string;
