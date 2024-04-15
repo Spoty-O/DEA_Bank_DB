@@ -14,7 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "composite": true,
+    "paths": {
+      "@backend/*": ["../backend/src/types/*"],
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
 }

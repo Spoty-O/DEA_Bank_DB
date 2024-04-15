@@ -1,5 +1,5 @@
 interface IClientData {
-  id: string;
+  [id: string]: string;
   firstName: string;
   lastName: string;
   phone: string;

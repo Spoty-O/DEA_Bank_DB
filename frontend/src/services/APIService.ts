@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IClientData } from '../models/types';
+import { ClientAttributes } from '@backend/types';
 
 export const API = createApi({
   reducerPath: 'baseAPI',
@@ -8,7 +8,7 @@ export const API = createApi({
   }),
   endpoints: (build) => ({
     // Получение списка клиентов
-    getClients: build.query<IClientData[], number>({
+    getClients: build.query<ClientAttributes[], number>({
       query: (page) => ({
         url: 'clients',
         method: 'GET',
@@ -29,11 +29,22 @@ export const API = createApi({
     }),
 
     // Получение данных о клиенте
-    getClientData: build.query<IClientData, string>({
+    getClientData: build.query<ClientAttributes, string>({
       query: (id) => ({
         url: `clients/${id}`,
         method: 'GET',
       }),
     }),
+
+    // Получение данных о клиенте
+    // getClientBalance: build.query<IClientData, string>({
+    //   query: (clientId) => ({
+    //     url: 'balance',
+    //     method: 'GET',
+    //     params: {
+    //       clientId,
+    //     },
+    //   }),
+    // }),
   }),
 });
