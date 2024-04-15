@@ -6,34 +6,34 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { API } from '../services/APIService';
 import { StyledTableCell, StyledTableRow } from '../utils/tableStyles';
+import { IClientData } from '../models/types';
 import { useNavigate } from 'react-router-dom';
 
-const Clients = () => {
-  const [page] = React.useState(1);
-  const { data: clientsList } = API.useGetClientsQuery(page);
-  const navigate = useNavigate();
+interface ClientsListProps {
+  list: any[];
+  link: string;
+  key: string;
+}
 
+const TableComponent: React.FC<ClientsListProps> = ({ list, link, key }) => {
+  const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="Clients">
         <TableHead>
           <TableRow className="bg-black">
-            <StyledTableCell>ID</StyledTableCell>
-            <StyledTableCell>First name</StyledTableCell>
-            <StyledTableCell>Last name</StyledTableCell>
-            <StyledTableCell>Phone</StyledTableCell>
+            {list && <StyledTableCell>{list}</StyledTableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
-          {clientsList &&
-            clientsList.map((row) => (
+          {list &&
+            list.map((row) => (
               <StyledTableRow
                 className="cursor-pointer"
                 key={row.id}
                 onClick={() => {
-                  navigate(`/client/${row.id}/`);
+                  navigate(`/${link}/${key}/`);
                 }}
               >
                 <TableCell>{row.id}</TableCell>
@@ -47,4 +47,5 @@ const Clients = () => {
     </TableContainer>
   );
 };
-export default Clients;
+
+export default TableComponent;
