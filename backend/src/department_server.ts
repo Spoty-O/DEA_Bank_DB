@@ -11,11 +11,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app: Express = express();
-const PORT = 5001;
+const PORT = process.argv[2];
 const HOST = "localhost";
 
 const DBController = new DataBaseController(
-  process.env.DB_NAME,
+  process.argv[3],
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   process.env.DB_HOST,

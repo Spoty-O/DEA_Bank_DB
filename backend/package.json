@@ -12,9 +12,9 @@
   "scripts": {
     "dev_main": "npx nodemon ./src/main_server.ts",
     "dev_department": "npx nodemon ./src/department_server.ts",
-    "init_DEA_BANK": "npx tsx ./src/db_init.ts DEA_BANK",
-    "init_Dep_1": "npx tsx ./src/db_init.ts Department1",
-    "init_Dep_2": "npx tsx ./src/db_init.ts Department2",
+    "init_DEA_BANK": "npx tsx ./src/db_init.ts 5000 DEA_BANK",
+    "init_Dep_1": "npx tsx ./src/db_init.ts 5001 Department1",
+    "init_Dep_2": "npx tsx ./src/db_init.ts 5002 Department2",
     "init": "npm run init_DEA_BANK && npm run init_Dep_1 && npm run init_Dep_2",
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build && node build/index",
