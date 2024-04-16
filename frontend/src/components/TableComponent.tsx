@@ -7,24 +7,27 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { StyledTableCell, StyledTableRow } from '../utils/tableStyles';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { ClientAttributes } from '@backend/types';
 
 interface ClientsListProps {
   list: ClientAttributes[] | undefined;
   link: string;
-  keyp: string;
+  setClient: React.Dispatch<React.SetStateAction<ClientAttributes | undefined>>;
 }
 
-const TableComponent: React.FC<ClientsListProps> = ({ list, link, keyp }) => {
-  const navigate = useNavigate();
+const TableComponent: React.FC<ClientsListProps> = ({
+  list,
+  link,
+  setClient,
+}) => {
+  // const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="Clients">
         <TableHead>
           <TableRow className="bg-black">
             {list &&
-              keyp &&
               Object.keys(list[0]).map((value) => (
                 <StyledTableCell key={value}>{value}</StyledTableCell>
               ))}
@@ -32,13 +35,14 @@ const TableComponent: React.FC<ClientsListProps> = ({ list, link, keyp }) => {
         </TableHead>
         <TableBody>
           {list &&
-            keyp &&
             list.map((row) => (
               <StyledTableRow
                 className="cursor-pointer"
                 key={row.id}
                 onClick={() => {
-                  navigate(`/${link}/${row[keyp]}/`);
+                  console.log(link, row);
+                  setClient(row);
+                  // navigate(`/${link}/${row[keyp]}/`);
                 }}
               >
                 {row &&

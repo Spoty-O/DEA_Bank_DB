@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ClientAttributes } from '@backend/types';
+import { BankAccountAttributes, ClientAttributes } from '@backend/types';
 
 export const API = createApi({
   reducerPath: 'baseAPI',
@@ -37,14 +37,14 @@ export const API = createApi({
     }),
 
     // Получение данных о клиенте
-    // getClientBalance: build.query<IClientData, string>({
-    //   query: (clientId) => ({
-    //     url: 'balance',
-    //     method: 'GET',
-    //     params: {
-    //       clientId,
-    //     },
-    //   }),
-    // }),
+    getClientBalanceByClientId: build.query<BankAccountAttributes, string>({
+      query: (clientId) => ({
+        url: 'balance',
+        method: 'GET',
+        params: {
+          clientId,
+        },
+      }),
+    }),
   }),
 });
