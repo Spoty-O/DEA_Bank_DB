@@ -1,6 +1,7 @@
 import { ClientAttributes } from '@backend/types';
 import { Button, TextField } from '@mui/material';
 import * as React from 'react';
+import { API } from '../services/APIService';
 
 function updateClientData(
   row: ClientAttributes,
@@ -18,8 +19,17 @@ interface ClientDataProps {
 }
 
 const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
+  const [clientUpdate] = API.useUpdateClientDataMutation();
+
+  async function handler(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const res = await clientUpdate(client);
+    console.log(res);
+  }
+
   return (
-    <div className="flex gap-4 flex-col">
+    <form className="flex gap-4 flex-col" method="POST" onSubmit={handler}>
       <TextField
         name="id"
         label="ID"
@@ -38,7 +48,7 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
         }}
       />
       <TextField
-        name="lastname"
+        name="lastName"
         label="Lastname"
         variant="outlined"
         value={client.lastName}
@@ -55,8 +65,10 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
           setClient(updateClientData(client, e.target.name, e.target.value));
         }}
       />
-      <Button variant="contained">Save</Button>
-    </div>
+      <Button variant="contained" type="submit">
+        Save
+      </Button>
+    </form>
   );
 };
 

@@ -12,15 +12,10 @@ import { ClientAttributes } from '@backend/types';
 
 interface ClientsListProps {
   list: ClientAttributes[] | undefined;
-  link: string;
   setClient: React.Dispatch<React.SetStateAction<ClientAttributes | undefined>>;
 }
 
-const TableComponent: React.FC<ClientsListProps> = ({
-  list,
-  link,
-  setClient,
-}) => {
+const TableComponent: React.FC<ClientsListProps> = ({ list, setClient }) => {
   // const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
@@ -40,9 +35,7 @@ const TableComponent: React.FC<ClientsListProps> = ({
                 className="cursor-pointer"
                 key={row.id}
                 onClick={() => {
-                  console.log(link, row);
                   setClient(row);
-                  // navigate(`/${link}/${row[keyp]}/`);
                 }}
               >
                 {row &&

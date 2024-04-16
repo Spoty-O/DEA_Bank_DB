@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { FC } from 'react';
+import { API } from '../services/APIService';
 
-const ClientBalance = () => {
-  return <div>ClientBalance</div>;
+interface ClientBalanceDataProps {
+  clientId: string;
+}
+
+const ClientBalance: FC<ClientBalanceDataProps> = ({ clientId }) => {
+  const { data: ClientBalance } =
+    API.useGetClientBalanceByClientIdQuery(clientId);
+
+  return (
+    <div>
+      Balance:{' '}
+      <strong>{ClientBalance && ClientBalance.balance.toFixed(2)}</strong>
+    </div>
+  );
 };
 
 export default ClientBalance;

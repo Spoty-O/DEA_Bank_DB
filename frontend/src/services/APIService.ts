@@ -1,11 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BankAccountAttributes, ClientAttributes } from '@backend/types';
+import {
+  AccountTransactionAttributes,
+  BankAccountAttributes,
+  ClientAttributes,
+} from '@backend/types';
 
 export const API = createApi({
   reducerPath: 'baseAPI',
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_SERVER_API_DOMEN,
   }),
+  tagTypes: ['Clients'],
   endpoints: (build) => ({
     // Получение списка клиентов
     getClients: build.query<ClientAttributes[], number>({
@@ -17,15 +22,7 @@ export const API = createApi({
           offset: page * 12 - 12,
         },
       }),
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
-      },
-      merge: (currentCache, newItems) => {
-        currentCache.push(...newItems);
-      },
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
+      providesTags: ['Clients'],
     }),
 
     // Получение данных о клиенте
@@ -36,6 +33,15 @@ export const API = createApi({
       }),
     }),
 
+    updateClientData: build.mutation<ClientAttributes, ClientAttributes>({
+      query: (data) => ({
+        url: `/clients/${data.id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['Clients'],
+    }),
+
     // Получение данных о клиенте
     getClientBalanceByClientId: build.query<BankAccountAttributes, string>({
       query: (clientId) => ({
@@ -44,6 +50,13 @@ export const API = createApi({
         params: {
           clientId,
         },
+      }),
+    }),
+
+    getTransactions: build.query<AccountTransactionAttributes, string>({
+      query: (id) => ({
+        url: `transactions/${id}`,
+        method: 'GET',
       }),
     }),
   }),
