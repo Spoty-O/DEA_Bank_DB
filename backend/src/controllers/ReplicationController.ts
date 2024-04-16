@@ -6,7 +6,7 @@ import MainServerController from "./MainServerController.js";
 class ReplicationController {
   async getUserByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName } = req.body;
+      const { firstName, lastName } = req.params;
       const replicationData = await Replication.findOne({ where: { firstName, lastName } });
       if (!replicationData) {
         return next(MainServerController.getUserFromDepartments);
@@ -18,6 +18,18 @@ class ReplicationController {
       req.replicationData = replicationData;
       req.department = departmentByUser;
       return next(MainServerController.getUserFromDepartment);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  async createReplication(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id: departmentId } = req.department;
+      const { id: clientId, firstName, lastName } = req.user;
+      await Replication.create({ clientId, departmentId, firstName, lastName });
+      return;
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));

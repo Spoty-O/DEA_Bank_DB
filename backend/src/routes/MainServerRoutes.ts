@@ -1,7 +1,7 @@
 import { Router } from "express";
-import mainServerRouter from "./MainServerRoute.js";
+import replicationRouter from "./ReplicationRoute.js";
 const mainServerRoutes = Router();
 
-mainServerRoutes.use('/client', mainServerRouter);
+mainServerRoutes.use('/replication', replicationRouter);
 
 export default mainServerRoutes;
