@@ -1,4 +1,5 @@
 import { Optional } from "sequelize";
+import ApiError from "../helpers/ApiErrors.ts";
 
 interface DepartmentAttributes {
   id: number;
@@ -62,4 +63,5 @@ export {
   DepartmentAttributes,
   ReplicationAttributes,
   RequestQuery,
+  ApiError
 };

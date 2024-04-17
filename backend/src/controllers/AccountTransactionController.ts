@@ -1,8 +1,9 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import { AccountTransaction, AccountTransactionCreationAttributes } from "../models/AccountTransaction.js";
+import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { v4 as uuidv4 } from "uuid";
+import { AccountTransactionCreationAttributes } from "../types/types.js";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {

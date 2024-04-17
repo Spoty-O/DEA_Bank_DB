@@ -1,8 +1,9 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
-import { Client, ClientCreationAttributes } from "../models/Client.js";
+import { Client } from "../models/Client.js";
 import { v4 as uuidv4 } from "uuid";
+import { ClientCreationAttributes } from "../types/types.js";
 
 class ClientController {
   async initialize(): Promise<Client[]> {
