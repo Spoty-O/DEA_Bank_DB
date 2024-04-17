@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   AccountTransactionAttributes,
+  AccountTransactionCreationAttributes,
   BankAccountAttributes,
+  BankAccountCreationAttributes,
   ClientAttributes,
   ClientCreationAttributes,
 } from '@backend/types';
@@ -11,7 +13,7 @@ export const API = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_SERVER_API_DOMEN,
   }),
-  tagTypes: ['Clients'],
+  tagTypes: ['Clients', 'BankAccount', 'Transactions'],
   endpoints: (build) => ({
     // Получение списка клиентов
     getClients: build.query<ClientAttributes[], number>({
@@ -35,7 +37,10 @@ export const API = createApi({
     }),
 
     //создание клиента
-    createClient: build.mutation<ClientCreationAttributes, ClientCreationAttributes>({
+    createClient: build.mutation<
+      ClientCreationAttributes,
+      ClientCreationAttributes
+    >({
       query: (data) => ({
         url: 'clients',
         method: 'POST',
@@ -54,7 +59,7 @@ export const API = createApi({
       invalidatesTags: ['Clients'],
     }),
 
-    // Получение данных о клиенте
+    // Получение баланса клиента
     getClientBalanceByClientId: build.query<BankAccountAttributes[], string>({
       query: (clientId) => ({
         url: 'balance',
@@ -63,6 +68,33 @@ export const API = createApi({
           clientId,
         },
       }),
+      providesTags: ['BankAccount'],
+    }),
+
+    // Создание банковского счета
+    createBankAccount: build.mutation<
+      BankAccountCreationAttributes,
+      BankAccountCreationAttributes
+    >({
+      query: (data) => ({
+        url: 'balance',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['BankAccount'],
+    }),
+
+    // Обновление баланса клиента
+    updateBankAccount: build.mutation<
+      BankAccountAttributes,
+      BankAccountAttributes
+    >({
+      query: (data) => ({
+        url: `balance/${data.id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['BankAccount'],
     }),
 
     // Получение списка транзакций по счету
@@ -71,6 +103,20 @@ export const API = createApi({
         url: `transactions/${id}`,
         method: 'GET',
       }),
+      providesTags: ['Transactions'],
+    }),
+
+    // Deposit transaction
+    createTransaction: build.mutation<
+      AccountTransactionCreationAttributes,
+      AccountTransactionCreationAttributes
+    >({
+      query: (data) => ({
+        url: `transactions/${data.transactionType}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Transactions', "BankAccount"],
     }),
   }),
 });

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { API } from '../services/APIService';
 import TableComponent from './TableComponent';
 import { Box, Button, Card, TextField } from '@mui/material';
-import ClientData from './ClientData';
+import ClientData from './UpdateClientData';
 import {
   AccountTransactionAttributes,
   BankAccountAttributes,
@@ -11,6 +11,9 @@ import {
 import ClientBalance from './ClientBalance';
 import BankAccountTransactions from './BankAccountTransactions';
 import CreateClient from './CreateClient';
+import CreateBankAccount from './CreateBankAccount';
+import UpdateBalance from './UpdateBalance';
+import CreateTransaction from './CreateTransaction';
 
 const Clients = () => {
   const [page] = React.useState(1);
@@ -28,8 +31,8 @@ const Clients = () => {
 
   return (
     <>
-      <div className="flex gap-5">
-        <Card className="flex flex-col gap-5 w-1/2 p-5">
+      <div className="flex gap-5 w-full flex-col xl:flex-row">
+        <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
           <div className="flex flex-col gap-2">
             <div className="flex w-full gap-3">
               <TextField
@@ -53,8 +56,8 @@ const Clients = () => {
             <TableComponent list={clientsList} setState={setClient} />
           </div>
         </Card>
-        <div className="flex gap-3">
-          <Card variant="outlined" sx={{ minWidth: 350 }}>
+        <div className="flex gap-3 flex-wrap md:flex-nowrap xl:flex-wrap 2xl:flex-nowrap">
+          <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
             <Box sx={{ p: 2 }}>
               <h3 className="flex justify-center font-bold mb-2 uppercase">
                 create client
@@ -63,7 +66,7 @@ const Clients = () => {
             </Box>
           </Card>
           {client && (
-            <Card variant="outlined" sx={{ minWidth: 350 }}>
+            <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
               <Box sx={{ p: 2 }}>
                 <h3 className="flex justify-center font-bold mb-2 uppercase">
                   update client
@@ -76,29 +79,45 @@ const Clients = () => {
       </div>
       {client && (
         // Получение баланса клиента
-        <div className="flex gap-5">
-          <Card className="flex flex-col gap-5 w-1/2 p-5">
+        <div className="flex gap-5 w-full flex-col xl:flex-row">
+          <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
             <ClientBalance clientId={client.id} setState={setBankAccount} />
           </Card>
-          <div className="flex gap-3">
-            <Card className="" variant="outlined" sx={{ minWidth: 350 }}>
+          <div className="flex gap-3 flex-wrap md:flex-nowrap xl:flex-wrap 2xl:flex-nowrap">
+            <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
               <Box sx={{ p: 2 }}>
                 <h3 className="flex justify-center font-bold mb-2 uppercase">
                   create bank account
                 </h3>
-                <ClientData client={client} setClient={setClient} />
+                <CreateBankAccount clientId={client.id} />
               </Box>
             </Card>
-            <Card variant="outlined" sx={{ minWidth: 350 }}>
-              <Box sx={{ p: 2 }}>
-                <h3 className="flex justify-center font-bold mb-2 uppercase">
-                  update bank account
-                </h3>
-                <ClientData client={client} setClient={setClient} />
-              </Box>
-            </Card>
+            {bankAccount && (
+              <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
+                <Box sx={{ p: 2 }}>
+                  <h3 className="flex justify-center font-bold mb-2 uppercase">
+                    update bank account
+                  </h3>
+                  <UpdateBalance
+                    bankAccount={bankAccount}
+                    setBankAccount={setBankAccount}
+                  />
+                </Box>
+              </Card>
+            )}
           </div>
         </div>
+      )}
+      {bankAccount && (
+        // Добавление транзакции
+        <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
+          <Box sx={{ p: 2 }}>
+            <h3 className="flex justify-center font-bold mb-2 uppercase">
+              create transaction
+            </h3>
+            <CreateTransaction bankAccountId={bankAccount.id} />
+          </Box>
+        </Card>
       )}
       {bankAccount && (
         // Получение списка транзакций по счету

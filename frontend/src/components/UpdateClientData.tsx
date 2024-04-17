@@ -3,7 +3,7 @@ import { Button, TextField } from '@mui/material';
 import * as React from 'react';
 import { API } from '../services/APIService';
 
-function updateClientData(
+function updateData(
   row: ClientAttributes,
   name: string,
   value: string,
@@ -18,7 +18,7 @@ interface ClientDataProps {
   setClient: React.Dispatch<React.SetStateAction<ClientAttributes | undefined>>;
 }
 
-const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
+const UpdateClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
   const [clientUpdate] = API.useUpdateClientDataMutation();
 
   async function handler(e: React.FormEvent<HTMLFormElement>) {
@@ -44,7 +44,7 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
         variant="outlined"
         value={client.firstName}
         onChange={(e) => {
-          setClient(updateClientData(client, e.target.name, e.target.value));
+          setClient(updateData(client, e.target.name, e.target.value));
         }}
       />
       <TextField
@@ -53,7 +53,7 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
         variant="outlined"
         value={client.lastName}
         onChange={(e) => {
-          setClient(updateClientData(client, e.target.name, e.target.value));
+          setClient(updateData(client, e.target.name, e.target.value));
         }}
       />
       <TextField
@@ -62,7 +62,7 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
         variant="outlined"
         value={client.phone}
         onChange={(e) => {
-          setClient(updateClientData(client, e.target.name, e.target.value));
+          setClient(updateData(client, e.target.name, e.target.value));
         }}
       />
       <Button variant="contained" type="submit">
@@ -72,4 +72,4 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
   );
 };
 
-export default ClientData;
+export default UpdateClientData;

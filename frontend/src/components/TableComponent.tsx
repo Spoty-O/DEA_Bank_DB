@@ -27,7 +27,7 @@ const TableComponent = <T extends object>({
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="Table">
+      <Table sx={{ minWidth: 700 }} aria-label="Table">
         <TableHead>
           <TableRow className="bg-black">
             {headers.map((header) => (

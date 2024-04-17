@@ -40,15 +40,15 @@ class AccountTransactionController {
 
   async deposit(req: Request, res: Response, next: NextFunction) {
     try {
-      const { accountId, amount } = req.body;
+      const { bankAccountId, amount } = req.body;
 
-      if (!accountId || !amount) {
-        return next(ApiError.badRequest("accountId and amount are required"));
+      if (!bankAccountId || !amount) {
+        return next(ApiError.badRequest("bankAccountId and amount are required"));
       }
 
       if (!Number(amount)) next(ApiError.badRequest("Amount is not a number"));
 
-      const account = await BankAccount.findOne({ where: { id: accountId } });
+      const account = await BankAccount.findOne({ where: { id: bankAccountId } });
 
       if (!account) {
         return next(ApiError.badRequest("Account not found!"));
@@ -61,8 +61,8 @@ class AccountTransactionController {
         amount,
         date: new Date(),
         transactionType: "deposit",
-        bankAccountId: accountId,
-        recipientBankAccountId: accountId,
+        bankAccountId: bankAccountId,
+        recipientBankAccountId: bankAccountId,
       });
 
       res.json({ message: "Deposit successful" });
@@ -74,15 +74,15 @@ class AccountTransactionController {
 
   async withdraw(req: Request, res: Response, next: NextFunction) {
     try {
-      const { accountId, amount } = req.body;
+      const { bankAccountId, amount } = req.body;
 
-      if (!accountId || !amount) {
-        return next(ApiError.badRequest("accountId and amount are required"));
+      if (!bankAccountId || !amount) {
+        return next(ApiError.badRequest("bankAccountId and amount are required"));
       }
 
       if (!Number(amount)) next(ApiError.badRequest("Amount is not a number"));
 
-      const account = await BankAccount.findByPk(accountId);
+      const account = await BankAccount.findByPk(bankAccountId);
 
       if (!account) {
         return next(ApiError.badRequest("Account not found!"));
@@ -99,8 +99,8 @@ class AccountTransactionController {
         amount: -Number(amount),
         date: new Date(),
         transactionType: "withdrawal",
-        bankAccountId: accountId,
-        recipientBankAccountId: accountId,
+        bankAccountId: bankAccountId,
+        recipientBankAccountId: bankAccountId,
       });
 
       res.json({ message: "Withdrawal successful" });
@@ -113,17 +113,17 @@ class AccountTransactionController {
   async performTransfer(req: Request, res: Response, next: NextFunction) {
     try {
       // Получаем данные из запроса
-      const { senderAccountId, recipientAccountId, amount } = req.body;
+      const { bankAccountId, recipientBankAccountId, amount } = req.body;
 
-      if (!senderAccountId || !recipientAccountId || !amount) {
-        return next(ApiError.badRequest("senderAccountId, recipientAccountId and amount are required"));
+      if (!bankAccountId || !recipientBankAccountId || !amount) {
+        return next(ApiError.badRequest("bankAccountId, recipientBankAccountId and amount are required"));
       }
 
       if (!Number(amount)) next(ApiError.badRequest("Amount is not a number"));
 
       // Находим банковские счета отправителя и получателя
-      const senderAccount = await BankAccount.findByPk(senderAccountId);
-      const recipientAccount = await BankAccount.findByPk(recipientAccountId);
+      const senderAccount = await BankAccount.findByPk(bankAccountId);
+      const recipientAccount = await BankAccount.findByPk(recipientBankAccountId);
 
       if (!senderAccount || !recipientAccount) {
         return next(ApiError.notFound("Sender or recipient account not found"));
@@ -158,8 +158,8 @@ class AccountTransactionController {
             amount: -Number(amount),
             date: new Date(),
             transactionType: "transfer",
-            bankAccountId: senderAccountId,
-            recipientBankAccountId: recipientAccountId,
+            bankAccountId: bankAccountId,
+            recipientBankAccountId: recipientBankAccountId,
           },
           { transaction },
         );
@@ -171,8 +171,8 @@ class AccountTransactionController {
             amount: Number(amount),
             date: new Date(),
             transactionType: "transfer",
-            bankAccountId: recipientAccountId,
-            recipientBankAccountId: senderAccountId,
+            bankAccountId: recipientBankAccountId,
+            recipientBankAccountId: bankAccountId,
           },
           { transaction },
         );
