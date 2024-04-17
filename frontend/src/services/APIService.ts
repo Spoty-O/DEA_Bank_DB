@@ -6,6 +6,7 @@ import {
   BankAccountCreationAttributes,
   ClientAttributes,
   ClientCreationAttributes,
+  ClientFindByNameAttributes,
 } from '@backend/types';
 
 export const API = createApi({
@@ -28,12 +29,17 @@ export const API = createApi({
       providesTags: ['Clients'],
     }),
 
-    // Получение данных о клиенте
-    getClientData: build.query<ClientAttributes, string>({
-      query: (id) => ({
-        url: `clients/${id}`,
+    // Поиск клиента по имени и фамилии
+    getClientByName: build.mutation<
+      ClientFindByNameAttributes,
+      ClientFindByNameAttributes
+    >({
+      query: (data) => ({
+        url: `clients/find`,
         method: 'GET',
+        params: data,
       }),
+      invalidatesTags: ['Clients'],
     }),
 
     //создание клиента
@@ -116,7 +122,7 @@ export const API = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Transactions', "BankAccount"],
+      invalidatesTags: ['Transactions', 'BankAccount'],
     }),
   }),
 });

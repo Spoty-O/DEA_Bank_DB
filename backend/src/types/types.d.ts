@@ -26,6 +26,7 @@ interface ClientAttributes {
 }
 
 interface ClientCreationAttributes extends Optional<ClientAttributes, "replicated" | "id"> {}
+interface ClientFindByNameAttributes extends Optional<ClientCreationAttributes, "phone"> {}
 
 interface BankAccountAttributes {
   id: string;
@@ -56,6 +57,7 @@ interface RequestQuery {
 export {
   ClientAttributes,
   ClientCreationAttributes,
+  ClientFindByNameAttributes,
   AccountTransactionAttributes,
   AccountTransactionCreationAttributes,
   BankAccountAttributes,

@@ -7,6 +7,7 @@ import {
   AccountTransactionAttributes,
   BankAccountAttributes,
   ClientAttributes,
+  ClientFindByNameAttributes,
 } from '@backend/types';
 import ClientBalance from './ClientBalance';
 import BankAccountTransactions from './BankAccountTransactions';
@@ -18,6 +19,12 @@ import CreateTransaction from './CreateTransaction';
 const Clients = () => {
   const [page] = React.useState(1);
   const { data: clientsList } = API.useGetClientsQuery(page);
+  const [findClients] = API.useGetClientByNameMutation();
+  const [findClientState, setFindClientState] =
+    React.useState<ClientFindByNameAttributes>({
+      firstName: '',
+      lastName: '',
+    });
   const [client, setClient] = React.useState<ClientAttributes>();
   const [bankAccount, setBankAccount] = React.useState<BankAccountAttributes>();
   const [accountTransaction, setAccountTransaction] =
@@ -29,29 +36,49 @@ const Clients = () => {
     setBankAccount(undefined);
   }, [client]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFindClientState({
+      ...findClientState,
+      [e.target.name]: e.target.value,
+    });
+    console.log(findClientState);
+  };
+
+  const findHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await findClients(findClientState);
+    // console.log(findClientState);
+  };
+
   return (
     <>
       <div className="flex gap-5 w-full flex-col xl:flex-row">
         <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
-          <div className="flex flex-col gap-2">
+          <form className="flex flex-col gap-2" onSubmit={findHandler}>
             <div className="flex w-full gap-3">
               <TextField
                 className="w-full"
-                id="firstName"
+                name="firstName"
                 label="Firstname"
                 size="small"
+                value={findClientState.firstName}
+                onChange={handleChange}
                 required
               />
               <TextField
                 className="w-full"
-                id="lastName"
+                name="lastName"
                 label="Lastname"
                 size="small"
+                value={findClientState.lastName}
+                onChange={handleChange}
                 required
               />
             </div>
-            <Button variant="contained">Find</Button>
-          </div>
+            <Button variant="contained" type="submit">
+              Find
+            </Button>
+          </form>
           <div className="flex flex-col gap-5">
             <TableComponent list={clientsList} setState={setClient} />
           </div>

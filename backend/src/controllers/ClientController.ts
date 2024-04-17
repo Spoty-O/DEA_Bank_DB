@@ -47,8 +47,8 @@ class ClientController {
 
   async getClientByName(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log(req.query);
       const { firstName, lastName } = req.validatedQuery;
-      // console.log(`id = ${id}`);
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
         const { data } = await axios.get<Client>("http://localhost:5000/api/replication/client", {
