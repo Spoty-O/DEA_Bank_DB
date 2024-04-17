@@ -5,7 +5,7 @@ import { joiUserGetSchema } from "../helpers/joiSchems/replicationSchema.js";
 const clientRouter = Router();
 
 clientRouter.get("/:id", ClientController.getClientById);
-clientRouter.get("/", validation(joiUserGetSchema), ClientController.getClientByName);
+clientRouter.get("/find", validation(joiUserGetSchema), ClientController.getClientByName);
 clientRouter.get("/", ClientController.getAllClients);
 clientRouter.post("/", ClientController.createClient);
 clientRouter.patch("/:id", ClientController.updateClient);
