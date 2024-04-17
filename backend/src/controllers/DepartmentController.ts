@@ -14,12 +14,12 @@ class DepartmentsController {
     try {
       const departments = await Department.findAll();
       req.departmentList = departments;
-      next()
+      next();
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return next(ApiError.internal("Error getting departments"));
     }
-  };
+  }
 }
 
 export default new DepartmentsController();

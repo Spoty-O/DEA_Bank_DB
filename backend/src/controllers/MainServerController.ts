@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { Client } from "../models/Client.js";
 
 class MainServerController {
-  async getUserFromDepartment(req: Request, res: Response, next: NextFunction) {
+  static async requestForUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { domain } = req.department;
       const { clientId } = req.replicationData;
@@ -16,7 +16,7 @@ class MainServerController {
     }
   }
 
-  async getUserFromDepartments(req: Request, res: Response, next: NextFunction) {
+  static async getUserFromDepartments(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName } = req.params;
       const requestsList: Promise<AxiosResponse<Client>>[] = [];
@@ -25,13 +25,13 @@ class MainServerController {
       }
 
       const resultsRequests = await Promise.allSettled(requestsList);
-      const result = resultsRequests.find((value) => {
-        return value.status == "fulfilled";
-      });
-      if (!result || result.status == "rejected") {
+      const result = resultsRequests.find((value): value is PromiseFulfilledResult<AxiosResponse<Client>> => {
+        return value.status === "fulfilled";
+      })?.value;
+      if (!result) {
         return next(ApiError.notFound("User not found in another departments"));
       }
-      const { url } = result.value.config;
+      const { url } = result.config;
       if (!url) {
         return next(ApiError.notFound("URL departamenta ne nasol lol"));
       }
@@ -43,8 +43,8 @@ class MainServerController {
         return next(ApiError.notFound("Department for replication not found"));
       }
       req.department = department;
-      req.user = result.value.data;
-      res.json(result.value.data);
+      req.user = result.data;
+      res.json(result.data);
       return next();
     } catch (error) {
       console.log(error);
@@ -55,4 +55,4 @@ class MainServerController {
   // async getUserF
 }
 
-export default new MainServerController();
+export default MainServerController;

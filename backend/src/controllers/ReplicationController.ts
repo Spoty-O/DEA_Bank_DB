@@ -1,15 +1,18 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
-import MainServerController from "./MainServerController.js";
 
 class ReplicationController {
-  async getUserByName(req: Request, res: Response, next: NextFunction) {
+  async getUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName } = req.params;
+      const { firstName, lastName, clientId } = req.query;
+      if ((!firstName && !lastName) || )
       const replicationData = await Replication.findOne({ where: { firstName, lastName } });
       if (!replicationData) {
-        return next(MainServerController.getUserFromDepartments);
+        return next();
+      }
+      if (clientId) {
+        req.replicationData = await Replication.findOne({ where: { cli } });
       }
       const departmentByUser = await replicationData.getDepartment();
       if (!departmentByUser) {
@@ -17,7 +20,7 @@ class ReplicationController {
       }
       req.replicationData = replicationData;
       req.department = departmentByUser;
-      return next(MainServerController.getUserFromDepartment);
+      return next();
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));

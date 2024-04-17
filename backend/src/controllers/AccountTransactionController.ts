@@ -1,13 +1,16 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import { AccountTransaction, AccountTransactionCreationAttributes } from "../models/AccountTransaction.js";
+import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
+import { AccountTransactionAttributes } from "../types/types.js";
+import { v4 as uuidv4 } from "uuid";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
-    const accountTransactionsValues: AccountTransactionCreationAttributes[] = [];
+    const accountTransactionsValues: AccountTransactionAttributes[] = [];
     for (const bankAccount of bankAccounts) {
       accountTransactionsValues.push({
+        id: uuidv4(),
         amount: 500,
         date: new Date(),
         transactionType: "transfer",
@@ -54,6 +57,7 @@ class AccountTransactionController {
       await account.update({ balance: account.balance + Number(amount) });
 
       await AccountTransaction.create({
+        id: uuidv4(),
         amount,
         date: new Date(),
         transactionType: "deposit",
@@ -91,6 +95,7 @@ class AccountTransactionController {
       await account.update({ balance: account.balance - Number(amount) });
 
       await AccountTransaction.create({
+        id: uuidv4(),
         amount: -Number(amount),
         date: new Date(),
         transactionType: "withdrawal",
@@ -149,6 +154,7 @@ class AccountTransactionController {
         // Создаем запись о транзакции списания средств
         await AccountTransaction.create(
           {
+            id: uuidv4(),
             amount: -Number(amount),
             date: new Date(),
             transactionType: "transfer",
@@ -161,6 +167,7 @@ class AccountTransactionController {
         // Создаем запись о транзакции зачисления средств
         await AccountTransaction.create(
           {
+            id: uuidv4(),
             amount: Number(amount),
             date: new Date(),
             transactionType: "transfer",

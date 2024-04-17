@@ -2,7 +2,7 @@ import ApiError from "../helpers/ApiErrors.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { createHash } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 import { BankAccountAttributes } from "../types/types.js";
 
 class BankAccountController {
@@ -10,7 +10,7 @@ class BankAccountController {
     const bankAccountValues: BankAccountAttributes[] = [];
     for (const client of clients) {
       bankAccountValues.push({
-        id: createHash("sha1").update(client.id).digest("hex"),
+        id: uuidv4(),
         balance: 1000,
         clientId: client.id,
       });
@@ -56,7 +56,7 @@ class BankAccountController {
       }
 
       const bankAccount = await BankAccount.create({
-        id: createHash("sha1").update(clientId).digest("hex"),
+        id: uuidv4(),
         balance: balance,
         clientId: clientId,
       });

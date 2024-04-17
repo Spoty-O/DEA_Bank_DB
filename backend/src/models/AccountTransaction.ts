@@ -1,14 +1,15 @@
-import { AllowNull, Model, Table, DataType, ForeignKey, BelongsTo, Column } from "sequelize-typescript";
+import { AllowNull, Model, Table, DataType, ForeignKey, BelongsTo, Column, PrimaryKey } from "sequelize-typescript";
 import { BankAccount } from "./BankAccount.js";
-import { Optional } from "sequelize";
 import { AccountTransactionAttributes } from "../types/types.js";
-
-export interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "id"> {}
 
 @Table({
   timestamps: false,
 })
-export class AccountTransaction extends Model<AccountTransactionAttributes, AccountTransactionCreationAttributes> {
+export class AccountTransaction extends Model<AccountTransactionAttributes> {
+  @PrimaryKey
+  @Column(DataType.STRING(40))
+  id!: string;
+
   @AllowNull(false)
   @Column(DataType.FLOAT(15, 2))
   amount!: number;

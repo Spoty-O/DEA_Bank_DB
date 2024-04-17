@@ -22,7 +22,7 @@ interface ClientAttributes {
 }
 
 interface AccountTransactionAttributes {
-  id: number;
+  id: string;
   amount: number;
   date: Date;
   transactionType: string;

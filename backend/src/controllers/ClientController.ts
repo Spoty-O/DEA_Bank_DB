@@ -1,21 +1,16 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { createHash } from "crypto";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { ClientAttributes } from "../types/types.js";
+import { v4 as uuidv4 } from "uuid";
 
 class ClientController {
   async initialize(): Promise<Client[]> {
     const clientsValues: ClientAttributes[] = [];
     for (let i = 0; i < 5; i++) {
-      const firstName = getRandomName();
-      const lastName = getRandomLastName();
-      const phone = generateRandomPhoneNumber();
       clientsValues.push({
-        id: createHash("sha1")
-          .update(firstName + lastName + phone)
-          .digest("hex"),
+        id: uuidv4(),
         firstName: getRandomName(),
         lastName: getRandomLastName(),
         phone: generateRandomPhoneNumber(),
@@ -53,7 +48,7 @@ class ClientController {
     try {
       const { firstName, lastName } = req.params;
       // console.log(`id = ${id}`);
-      const client = await Client.findOne({where: {firstName, lastName}});
+      const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
         return next(ApiError.notFound("Client not found"));
       }
@@ -78,9 +73,7 @@ class ClientController {
       }
 
       const client = await Client.create({
-        id: createHash("sha1")
-          .update(firstName + lastName + phone)
-          .digest("hex"),
+        id: uuidv4(),
         firstName,
         lastName,
         phone,
