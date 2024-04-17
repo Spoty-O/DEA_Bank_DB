@@ -31,8 +31,8 @@ export class BankAccount extends Model<BankAccountAttributes, BankAccountCreatio
   clientId!: string;
 
   @AllowNull(false)
-  @Column(DataType.BOOLEAN)
   @Default(false)
+  @Column(DataType.BOOLEAN)
   replicated!: boolean;
 
   @BelongsTo(() => Client)

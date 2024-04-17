@@ -23,8 +23,8 @@ export class AccountTransaction extends Model<AccountTransactionAttributes, Acco
   transactionType!: string;
 
   @AllowNull(false)
-  @Column(DataType.BOOLEAN)
   @Default(false)
+  @Column(DataType.BOOLEAN)
   replicated!: boolean;
 
   @ForeignKey(() => BankAccount)

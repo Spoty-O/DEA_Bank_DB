@@ -23,8 +23,8 @@ export class Client extends Model<ClientAttributes, ClientCreationAttributes> {
   phone!: string;
 
   @AllowNull(false)
-  @Column(DataType.BOOLEAN)
   @Default(false)
+  @Column(DataType.BOOLEAN)
   replicated!: boolean;
 
   @HasMany(() => BankAccount, { onDelete: "CASCADE" })
