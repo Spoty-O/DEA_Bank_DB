@@ -9,44 +9,48 @@ import Paper from '@mui/material/Paper';
 import { StyledTableCell, StyledTableRow } from '../utils/tableStyles';
 // import { useNavigate } from 'react-router-dom';
 
-interface ObjectProps<T> {
-  list: T[] | undefined;
-  setState: React.Dispatch<React.SetStateAction<T | undefined>>;
+interface TableComponentProps<T extends object> {
+  list: T[] | undefined; // Массив объектов типа T
+  setState: React.Dispatch<React.SetStateAction<T | undefined>>; // Функция для обновления состояния
 }
 
-const TableComponent: React.FC<ObjectProps<T>> = ({ list, setState }) => {
-  // const navigate = useNavigate();
+function TableComponent<T extends object>({
+  list,
+  setState,
+}: TableComponentProps<T>) {
+  // Если list пуст или не определен, возвращаем null
+  if (!list || list.length === 0) return null;
+
+  // Определение заголовков таблицы по первому элементу массива
+  const [firstItem] = list;
+  const headers = Object.keys(firstItem);
+  
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="Clients">
+      <Table sx={{ minWidth: 650 }} aria-label="Table">
         <TableHead>
           <TableRow className="bg-black">
-            {list &&
-              Object.keys(list[0]).map((value) => (
-                <StyledTableCell key={value}>{value}</StyledTableCell>
-              ))}
+            {headers.map((header) => (
+              <StyledTableCell key={header}>{header}</StyledTableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {list &&
-            list.map((row) => (
-              <StyledTableRow
-                className="cursor-pointer"
-                key={row.id}
-                onClick={() => {
-                  setState(row);
-                }}
-              >
-                {row &&
-                  Object.values(row).map((data, index) => (
-                    <TableCell key={index}>{data}</TableCell>
-                  ))}
-              </StyledTableRow>
-            ))}
+          {list.map((row, index) => (
+            <StyledTableRow
+              key={index}
+              className="cursor-pointer"
+              onClick={() => setState(row)}
+            >
+              {Object.values(row).map((value, index) => (
+                <TableCell key={index}>{value}</TableCell>
+              ))}
+            </StyledTableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
-};
+}
 
 export default TableComponent;
