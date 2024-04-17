@@ -124,6 +124,10 @@ class AccountTransactionController {
         return next(ApiError.notFound("Sender or recipient account not found"));
       }
 
+      if (senderAccount.id === recipientAccount.id) {
+        return next(ApiError.badRequest("Sender and recipient accounts must be different"));
+      }
+
       // Проверяем достаточность средств на счете отправителя
       if (senderAccount.balance < Number(amount)) {
         return next(ApiError.badRequest("Insufficient funds"));

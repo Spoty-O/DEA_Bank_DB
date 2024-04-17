@@ -35,7 +35,7 @@ const Clients = () => {
             <Button variant="contained">Find</Button>
           </div>
           <div className="flex flex-col gap-5">
-            <TableComponent list={clientsList} setClient={setClient} />
+            <TableComponent list={clientsList} setState={setClient} />
           </div>
         </div>
         {client && (

@@ -8,14 +8,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { StyledTableCell, StyledTableRow } from '../utils/tableStyles';
 // import { useNavigate } from 'react-router-dom';
-import { ClientAttributes } from '@backend/types';
 
-interface ClientsListProps {
-  list: ClientAttributes[] | undefined;
-  setClient: React.Dispatch<React.SetStateAction<ClientAttributes | undefined>>;
+interface ObjectProps<T> {
+  list: T[] | undefined;
+  setState: React.Dispatch<React.SetStateAction<T | undefined>>;
 }
 
-const TableComponent: React.FC<ClientsListProps> = ({ list, setClient }) => {
+const TableComponent: React.FC<ObjectProps<T>> = ({ list, setState }) => {
   // const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
@@ -35,7 +34,7 @@ const TableComponent: React.FC<ClientsListProps> = ({ list, setClient }) => {
                 className="cursor-pointer"
                 key={row.id}
                 onClick={() => {
-                  setClient(row);
+                  setState(row);
                 }}
               >
                 {row &&
