@@ -1,3 +1,5 @@
+import { Optional } from "sequelize";
+
 interface DepartmentAttributes {
   id: number;
   address: string;
@@ -19,7 +21,19 @@ interface ClientAttributes {
   firstName: string;
   lastName: string;
   phone: string;
+  replicated: boolean;
 }
+
+interface ClientCreationAttributes extends Optional<ClientAttributes, "replicated" | "id"> {}
+
+interface BankAccountAttributes {
+  id: string;
+  balance: number;
+  clientId: string;
+  replicated: boolean;
+}
+
+interface BankAccountCreationAttributes extends Optional<BankAccountAttributes, "replicated" | "id"> {}
 
 interface AccountTransactionAttributes {
   id: string;
@@ -28,18 +42,24 @@ interface AccountTransactionAttributes {
   transactionType: string;
   bankAccountId: string;
   recipientBankAccountId: string;
+  replicated: boolean;
 }
 
-interface BankAccountAttributes {
-  id: string;
-  balance: number;
-  clientId: string;
+interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "replicated" | "id"> {}
+
+interface RequestQuery {
+  firstName: string;
+  lastName: string;
 }
 
 export {
   ClientAttributes,
+  ClientCreationAttributes,
   AccountTransactionAttributes,
+  AccountTransactionCreationAttributes,
   BankAccountAttributes,
+  BankAccountCreationAttributes,
   DepartmentAttributes,
   ReplicationAttributes,
+  RequestQuery,
 };

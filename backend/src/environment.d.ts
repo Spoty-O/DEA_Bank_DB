@@ -1,6 +1,6 @@
-import { Client } from "./models/Client.ts";
 import { Department } from "./models/Department.ts";
 import { Replication } from "./models/Replication.ts";
+import { RequestQuery } from "./types/types.js";
 
 declare global {
   namespace NodeJS {
@@ -13,7 +13,7 @@ declare global {
       replicationData: Replication;
       departmentList: Department[];
       department: Department;
-      user: Client;
+      query: RequestQuery;
     }
   }
 }

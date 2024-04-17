@@ -8,15 +8,16 @@ import {
   ForeignKey,
   BelongsTo,
   PrimaryKey,
+  Default,
 } from "sequelize-typescript";
 import { AccountTransaction } from "./AccountTransaction.js";
 import { Client } from "./Client.js";
-import { BankAccountAttributes } from "../types/types.js";
+import { BankAccountAttributes, BankAccountCreationAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
 })
-export class BankAccount extends Model<BankAccountAttributes> {
+export class BankAccount extends Model<BankAccountAttributes, BankAccountCreationAttributes> {
   @PrimaryKey
   @Column(DataType.STRING(40))
   id!: string;
@@ -28,6 +29,11 @@ export class BankAccount extends Model<BankAccountAttributes> {
   @ForeignKey(() => Client)
   @Column(DataType.STRING(40))
   clientId!: string;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  @Default(false)
+  replicated!: boolean;
 
   @BelongsTo(() => Client)
   client!: Client;

@@ -3,10 +3,9 @@ import { Request, Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
 
 class ReplicationController {
-  async getUser(req: Request, res: Response, next: NextFunction) {
+  async getUserByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName, clientId } = req.query;
-      if ((!firstName && !lastName) || )
+      const { firstName, lastName } = req.query;
       const replicationData = await Replication.findOne({ where: { firstName, lastName } });
       if (!replicationData) {
         return next();

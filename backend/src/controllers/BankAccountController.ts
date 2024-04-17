@@ -1,13 +1,12 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { BankAccount } from "../models/BankAccount.js";
+import { BankAccount, BankAccountCreationAttributes } from "../models/BankAccount.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { v4 as uuidv4 } from "uuid";
-import { BankAccountAttributes } from "../types/types.js";
 
 class BankAccountController {
   async initialize(clients: Client[]): Promise<BankAccount[]> {
-    const bankAccountValues: BankAccountAttributes[] = [];
+    const bankAccountValues: BankAccountCreationAttributes[] = [];
     for (const client of clients) {
       bankAccountValues.push({
         id: uuidv4(),

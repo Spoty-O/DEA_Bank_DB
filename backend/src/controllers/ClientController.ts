@@ -1,13 +1,12 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
-import { Client } from "../models/Client.js";
-import { ClientAttributes } from "../types/types.js";
+import { Client, ClientCreationAttributes } from "../models/Client.js";
 import { v4 as uuidv4 } from "uuid";
 
 class ClientController {
   async initialize(): Promise<Client[]> {
-    const clientsValues: ClientAttributes[] = [];
+    const clientsValues: ClientCreationAttributes[] = [];
     for (let i = 0; i < 5; i++) {
       clientsValues.push({
         id: uuidv4(),
