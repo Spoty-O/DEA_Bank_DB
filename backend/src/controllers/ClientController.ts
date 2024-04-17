@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { v4 as uuidv4 } from "uuid";
 import { ClientCreationAttributes } from "../types/types.js";
+import axios from "axios";
 
 class ClientController {
   async initialize(): Promise<Client[]> {
@@ -46,13 +47,19 @@ class ClientController {
 
   async getClientByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName } = req.params;
+      const { firstName, lastName } = req.validatedQuery;
       // console.log(`id = ${id}`);
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
-        return next(ApiError.notFound("Client not found"));
+        const { data } = await axios.get<Client>("http://localhost:5000/api/replication/client", {
+          params: { firstName, lastName },
+        });
+        if (!data) {
+          return next(ApiError.notFound("Client not found"));
+        }
+        return res.json(await Client.create(data));
       }
-      res.json(client);
+      return res.json(client);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));

@@ -1,7 +1,7 @@
 import { Client } from "./models/Client.ts";
 import { Department } from "./models/Department.ts";
 import { Replication } from "./models/Replication.ts";
-// import { RequestQuery } from "./types/types.js";
+import { RequestQuery } from "./types/types.js";
 
 declare global {
   namespace NodeJS {
@@ -15,9 +15,7 @@ declare global {
       departmentList: Department[];
       department: Department;
       user: Client;
-      query: {
-        [key: string]: string | undefined; // Может быть расширено по необходимости
-      };
+      validatedQuery: RequestQuery;
     }
   }
 }
