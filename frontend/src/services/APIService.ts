@@ -33,6 +33,7 @@ export const API = createApi({
       }),
     }),
 
+    // Обновление данных о клиенте
     updateClientData: build.mutation<ClientAttributes, ClientAttributes>({
       query: (data) => ({
         url: `/clients/${data.id}`,
@@ -43,7 +44,7 @@ export const API = createApi({
     }),
 
     // Получение данных о клиенте
-    getClientBalanceByClientId: build.query<BankAccountAttributes, string>({
+    getClientBalanceByClientId: build.query<BankAccountAttributes[], string>({
       query: (clientId) => ({
         url: 'balance',
         method: 'GET',
@@ -53,7 +54,8 @@ export const API = createApi({
       }),
     }),
 
-    getTransactions: build.query<AccountTransactionAttributes, string>({
+    // Получение списка транзакций по счету
+    getTransactions: build.query<AccountTransactionAttributes[], string>({
       query: (id) => ({
         url: `transactions/${id}`,
         method: 'GET',

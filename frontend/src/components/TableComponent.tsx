@@ -14,17 +14,17 @@ interface TableComponentProps<T extends object> {
   setState: React.Dispatch<React.SetStateAction<T | undefined>>; // Функция для обновления состояния
 }
 
-function TableComponent<T extends object>({
+const TableComponent = <T extends object>({
   list,
   setState,
-}: TableComponentProps<T>) {
+}: TableComponentProps<T>) => {
   // Если list пуст или не определен, возвращаем null
   if (!list || list.length === 0) return null;
 
   // Определение заголовков таблицы по первому элементу массива
   const [firstItem] = list;
   const headers = Object.keys(firstItem);
-  
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="Table">
@@ -51,6 +51,6 @@ function TableComponent<T extends object>({
       </Table>
     </TableContainer>
   );
-}
+};
 
 export default TableComponent;

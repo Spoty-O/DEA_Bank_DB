@@ -25,9 +25,9 @@ class BankAccountController {
       console.log(`id = ${id}`);
 
       if (typeof id === "string") {
-        bankAccount = await BankAccount.findOne({ where: { id } });
+        bankAccount = await BankAccount.findAll({ where: { id } });
       } else if (typeof clientId === "string") {
-        bankAccount = await BankAccount.findOne({ where: { clientId } });
+        bankAccount = await BankAccount.findAll({ where: { clientId } });
       } else {
         return next(ApiError.badRequest("id or clientId is required"));
       }

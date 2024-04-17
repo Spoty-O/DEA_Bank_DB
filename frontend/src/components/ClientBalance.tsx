@@ -1,20 +1,25 @@
 import React, { FC } from 'react';
 import { API } from '../services/APIService';
+import { BankAccountAttributes } from '@backend/types';
+import TableComponent from './TableComponent';
 
-interface ClientBalanceDataProps {
+interface BankAccountDataProps {
   clientId: string;
+  setState: React.Dispatch<
+    React.SetStateAction<BankAccountAttributes | undefined>
+  >;
 }
 
-const ClientBalance: FC<ClientBalanceDataProps> = ({ clientId }) => {
-  const { data: ClientBalance } =
+const BankAccount: FC<BankAccountDataProps> = ({ clientId, setState }) => {
+  const { data: BankAccount } =
     API.useGetClientBalanceByClientIdQuery(clientId);
 
   return (
-    <div>
-      Balance:{' '}
-      <strong>{ClientBalance && ClientBalance.balance.toFixed(2)}</strong>
+    <div className='min-h-48'>
+      <h2 className="text-2xl font-semibold">Bank accounts:</h2>
+      <TableComponent list={BankAccount} setState={setState} />
     </div>
   );
 };
 
-export default ClientBalance;
+export default BankAccount;
