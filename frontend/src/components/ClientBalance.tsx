@@ -15,10 +15,10 @@ const BankAccount: FC<BankAccountDataProps> = ({ clientId, setState }) => {
     API.useGetClientBalanceByClientIdQuery(clientId);
 
   return (
-    <div className='min-h-48'>
+    <>
       <h2 className="text-2xl font-semibold">Bank accounts:</h2>
       <TableComponent list={BankAccount} setState={setState} />
-    </div>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ export class AccountTransaction extends Model<AccountTransactionAttributes, Acco
   amount!: number;
 
   @AllowNull(false)
+  @Default(DataType.NOW)
   @Column(DataType.DATE)
   date!: Date;
 

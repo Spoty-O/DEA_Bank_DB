@@ -3,6 +3,7 @@ import {
   AccountTransactionAttributes,
   BankAccountAttributes,
   ClientAttributes,
+  ClientCreationAttributes,
 } from '@backend/types';
 
 export const API = createApi({
@@ -31,6 +32,16 @@ export const API = createApi({
         url: `clients/${id}`,
         method: 'GET',
       }),
+    }),
+
+    //создание клиента
+    createClient: build.mutation<ClientCreationAttributes, ClientCreationAttributes>({
+      query: (data) => ({
+        url: 'clients',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Clients'],
     }),
 
     // Обновление данных о клиенте

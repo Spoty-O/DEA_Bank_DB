@@ -46,7 +46,7 @@ class BankAccountController {
     try {
       const { balance, clientId } = req.body;
 
-      if (!balance || !clientId) {
+      if (balance === undefined || !clientId) {
         return next(ApiError.badRequest("balance, clientId are required"));
       }
 

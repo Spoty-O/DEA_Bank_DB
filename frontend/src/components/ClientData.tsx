@@ -29,7 +29,7 @@ const ClientData: React.FC<ClientDataProps> = ({ client, setClient }) => {
   }
 
   return (
-    <form className="flex gap-4 flex-col" method="POST" onSubmit={handler}>
+    <form className="flex gap-4 flex-col" onSubmit={handler}>
       <TextField
         name="id"
         label="ID"

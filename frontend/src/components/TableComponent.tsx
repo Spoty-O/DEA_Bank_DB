@@ -43,7 +43,7 @@ const TableComponent = <T extends object>({
               onClick={() => setState(row)}
             >
               {Object.values(row).map((value, index) => (
-                <TableCell key={index}>{value}</TableCell>
+                <TableCell key={index}>{String(value)}</TableCell>
               ))}
             </StyledTableRow>
           ))}

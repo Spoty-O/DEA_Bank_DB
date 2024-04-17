@@ -46,7 +46,7 @@ interface AccountTransactionAttributes {
   replicated: boolean;
 }
 
-interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "replicated" | "id"> {}
+interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "replicated" | "id" | "date"> {}
 
 interface RequestQuery {
   firstName: string;

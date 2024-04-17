@@ -10,6 +10,7 @@ import {
 } from '@backend/types';
 import ClientBalance from './ClientBalance';
 import BankAccountTransactions from './BankAccountTransactions';
+import CreateClient from './CreateClient';
 
 const Clients = () => {
   const [page] = React.useState(1);
@@ -20,7 +21,7 @@ const Clients = () => {
     React.useState<AccountTransactionAttributes>();
 
   React.useEffect(() => {
-    console.log(accountTransaction)
+    console.log(accountTransaction);
     // очистка данных при смене клиента
     setBankAccount(undefined);
   }, [client]);
@@ -28,7 +29,7 @@ const Clients = () => {
   return (
     <>
       <div className="flex gap-5">
-        <div className="flex flex-col gap-5">
+        <Card className="flex flex-col gap-5 w-1/2 p-5">
           <div className="flex flex-col gap-2">
             <div className="flex w-full gap-3">
               <TextField
@@ -51,22 +52,53 @@ const Clients = () => {
           <div className="flex flex-col gap-5">
             <TableComponent list={clientsList} setState={setClient} />
           </div>
+        </Card>
+        <div className="flex gap-3">
+          <Card variant="outlined" sx={{ minWidth: 350 }}>
+            <Box sx={{ p: 2 }}>
+              <h3 className="flex justify-center font-bold mb-2 uppercase">
+                create client
+              </h3>
+              <CreateClient />
+            </Box>
+          </Card>
+          {client && (
+            <Card variant="outlined" sx={{ minWidth: 350 }}>
+              <Box sx={{ p: 2 }}>
+                <h3 className="flex justify-center font-bold mb-2 uppercase">
+                  update client
+                </h3>
+                <ClientData client={client} setClient={setClient} />
+              </Box>
+            </Card>
+          )}
         </div>
-        {client && (
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-3 w-full">
-              <Card variant="outlined" sx={{ minWidth: 320 }}>
-                <Box sx={{ p: 2 }}>
-                  <ClientData client={client} setClient={setClient} />
-                </Box>
-              </Card>
-            </div>
-          </div>
-        )}
       </div>
       {client && (
         // Получение баланса клиента
-        <ClientBalance clientId={client.id} setState={setBankAccount} />
+        <div className="flex gap-5">
+          <Card className="flex flex-col gap-5 w-1/2 p-5">
+            <ClientBalance clientId={client.id} setState={setBankAccount} />
+          </Card>
+          <div className="flex gap-3">
+            <Card className="" variant="outlined" sx={{ minWidth: 350 }}>
+              <Box sx={{ p: 2 }}>
+                <h3 className="flex justify-center font-bold mb-2 uppercase">
+                  create bank account
+                </h3>
+                <ClientData client={client} setClient={setClient} />
+              </Box>
+            </Card>
+            <Card variant="outlined" sx={{ minWidth: 350 }}>
+              <Box sx={{ p: 2 }}>
+                <h3 className="flex justify-center font-bold mb-2 uppercase">
+                  update bank account
+                </h3>
+                <ClientData client={client} setClient={setClient} />
+              </Box>
+            </Card>
+          </div>
+        </div>
       )}
       {bankAccount && (
         // Получение списка транзакций по счету
