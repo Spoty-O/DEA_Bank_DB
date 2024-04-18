@@ -53,7 +53,7 @@ class ClientController {
         }
         return next(ApiError.notFound("Client not found"));
       }
-      await client.update('replicated', true)
+      await client.update({ replicated: true });
       return res.json(client);
     } catch (error) {
       console.log(error);
