@@ -4,7 +4,7 @@ import validation from "../middleware/validationMiddleware.js";
 import { joiUserGetSchema } from "../helpers/joiSchems/replicationSchema.js";
 const clientRouter = Router();
 
-// clientRouter.get("/:id", ClientController.getClientById);
+clientRouter.get("/:id", ClientController.getClientById);
 clientRouter.get("/find", validation(joiUserGetSchema), ClientController.getClientByName);
 clientRouter.get("/", ClientController.getAllClients);
 clientRouter.post("/", ClientController.createClient);
