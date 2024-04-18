@@ -25,6 +25,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "department1": "set REACT_APP_SERVER_PORT=5001&& (npm start)",
+    "department2": "set REACT_APP_SERVER_PORT=5002&& (npm start)",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

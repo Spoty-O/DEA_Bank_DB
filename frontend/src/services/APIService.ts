@@ -9,10 +9,13 @@ import {
   ClientFindByNameAttributes,
 } from '@backend/types';
 
+console.log(process.env)
+
 export const API = createApi({
   reducerPath: 'baseAPI',
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_SERVER_API_DOMEN,
+    baseUrl:
+      process.env.REACT_APP_SERVER_API_DOMEN + ':' + process.env.REACT_APP_SERVER_PORT + '/api',
   }),
   tagTypes: ['Clients', 'BankAccount', 'Transactions'],
   endpoints: (build) => ({

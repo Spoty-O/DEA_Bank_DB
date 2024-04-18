@@ -5,6 +5,7 @@ import { Box, Button, Card, TextField } from '@mui/material';
 import ClientData from './UpdateClientData';
 import {
   AccountTransactionAttributes,
+  ApiError,
   BankAccountAttributes,
   ClientAttributes,
   ClientFindByNameAttributes,
@@ -19,7 +20,7 @@ import CreateTransaction from './CreateTransaction';
 const Clients = () => {
   const [page] = React.useState(1);
   const { data: clientsList } = API.useGetClientsQuery(page);
-  const [findClients] = API.useGetClientByNameMutation();
+  const [findClients, { error: findError }] = API.useGetClientByNameMutation();
   const [findClientState, setFindClientState] =
     React.useState<ClientFindByNameAttributes>({
       firstName: '',
@@ -78,6 +79,11 @@ const Clients = () => {
             <Button variant="contained" type="submit">
               Find
             </Button>
+            {findError && 'data' in findError ? (
+              <span className="flex-1 text-red-700 text-sm font-semibold text-center">
+                <>{(findError.data as ApiError).message}</>
+              </span>
+            ) : null}
           </form>
           <div className="flex flex-col gap-5">
             <TableComponent list={clientsList} setState={setClient} />
