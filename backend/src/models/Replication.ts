@@ -1,10 +1,8 @@
 import { AllowNull, Column, Model, Table, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { Client } from "./Client.js";
 import { Department } from "./Department.js";
-import { BelongsToGetAssociationMixin, Optional } from "sequelize";
-import { ReplicationAttributes } from "../types/types.js";
-
-export interface ReplicationCreationAttributes extends Optional<ReplicationAttributes, "id"> {}
+import { BelongsToGetAssociationMixin } from "sequelize";
+import { ReplicationAttributes, ReplicationCreationAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
@@ -12,7 +10,7 @@ export interface ReplicationCreationAttributes extends Optional<ReplicationAttri
 export class Replication extends Model<ReplicationAttributes, ReplicationCreationAttributes> {
   @ForeignKey(() => Client)
   @AllowNull(false)
-  @Column(DataType.STRING(40))
+  @Column(DataType.UUID)
   clientId!: string;
 
   @AllowNull(false)
@@ -26,7 +24,12 @@ export class Replication extends Model<ReplicationAttributes, ReplicationCreatio
   @ForeignKey(() => Department)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  departmentId!: number;
+  recipientDepartmentId!: number;
+
+  @ForeignKey(() => Department)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  donorDepartmentId!: number;
 
   @BelongsTo(() => Department)
   department!: Department;

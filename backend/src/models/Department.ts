@@ -1,9 +1,6 @@
-import { AllowNull, Column, HasMany, Model, Table, DataType } from "sequelize-typescript";
+import { AllowNull, Column, HasMany, Model, Table, DataType, Default } from "sequelize-typescript";
 import { Replication } from "./Replication.js";
-import { Optional } from "sequelize";
-import { DepartmentAttributes } from "../types/types.js";
-
-export interface DepartmentCreationAttributes extends Optional<DepartmentAttributes, "id"> {}
+import { DepartmentAttributes, DepartmentCreationAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
@@ -24,6 +21,11 @@ export class Department extends Model<DepartmentAttributes, DepartmentCreationAt
   @AllowNull(false)
   @Column(DataType.STRING(100))
   domain!: string;
+
+  @AllowNull(false)
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  APIKey!: string;
 
   @HasMany(() => Replication, { onDelete: "CASCADE" })
   replications!: Replication[];

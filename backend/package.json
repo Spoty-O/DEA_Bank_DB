@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "dev_main": "npx nodemon ./src/main_server.ts",
-    "dev_department": "npx nodemon ./src/department_server.ts",
+    "dev_main": "npx nodemon --exitcrash ./src/main_server.ts",
+    "dev_department": "npx nodemon --exitcrash ./src/department_server.ts",
     "init_DEA_BANK": "npx tsx ./src/db_init.ts DEA_BANK",
     "init_Dep_1": "npx tsx ./src/db_init.ts Department1",
     "init_Dep_2": "npx tsx ./src/db_init.ts Department2",
@@ -24,9 +24,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@adminjs/express": "^6.1.0",
     "@types/cors": "^2.8.17",
-    "adminjs": "^7.8.1",
     "axios": "^1.6.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

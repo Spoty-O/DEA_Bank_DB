@@ -19,15 +19,16 @@ import { BankAccountAttributes, BankAccountCreationAttributes } from "../types/t
 })
 export class BankAccount extends Model<BankAccountAttributes, BankAccountCreationAttributes> {
   @PrimaryKey
-  @Column(DataType.STRING(40))
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
   id!: string;
 
   @AllowNull(false)
-  @Column(DataType.FLOAT(15, 2))
+  @Column(DataType.DECIMAL(15, 2))
   balance!: number;
 
   @ForeignKey(() => Client)
-  @Column(DataType.STRING(40))
+  @Column(DataType.UUID)
   clientId!: string;
 
   @AllowNull(false)

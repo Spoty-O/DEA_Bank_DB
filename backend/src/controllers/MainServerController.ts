@@ -1,36 +1,39 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import axios, { AxiosResponse } from "axios";
 import { Client } from "../models/Client.js";
+import AxiosRequest from "../helpers/AxiosRequest.js";
+import { RequestQuery } from "../types/types.js";
 
 class MainServerController {
   static async getUserFromDepartment(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName } = req.validatedQuery;
-      const requestsList: Promise<AxiosResponse<Client>>[] = [];
+      const requestsList: Promise<Client | ApiError>[] = [];
       for (const department of req.departmentList) {
-        requestsList.push(axios.get<Client>(department.domain + "/clients", { params: { firstName, lastName } }));
+        if (
+          department.id === req.department.id ||
+          (req.replicationData && req.replicationData.donorDepartmentId !== department.id)
+        ) {
+          continue;
+        }
+        requestsList.push(
+          AxiosRequest<Client, RequestQuery>(department.domain + "/clients/find", {
+            firstName,
+            lastName,
+            noReplicate: true,
+          }),
+        );
+        if (req.replicationData) {
+          req.departmentList[0] = department;
+          break;
+        }
       }
-      const resultsRequests = await Promise.allSettled(requestsList);
-      const result = resultsRequests.find((value): value is PromiseFulfilledResult<AxiosResponse<Client>> => {
-        return value.status === "fulfilled";
-      })?.value;
-      if (!result) {
-        return next(ApiError.notFound("User not found in another departments"));
+      const resultRequest = await Promise.any(requestsList);
+      if (resultRequest instanceof ApiError) {
+        return next(resultRequest);
       }
-      const { url } = result.config;
-      if (!url) {
-        return next(ApiError.notFound("Request sendler URL not found"));
-      }
-      const department = req.departmentList.find((value) => {
-        return value.domain + "/clients" === url;
-      });
-      if (!department) {
-        return next(ApiError.notFound("Department for replication not found"));
-      }
-      req.department = department;
-      req.user = result.data;
-      res.json(result.data);
+      req.user = resultRequest;
+      res.json(resultRequest);
       return next();
     } catch (error) {
       console.log(error);

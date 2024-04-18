@@ -7,7 +7,8 @@ import { ClientAttributes, ClientCreationAttributes } from "../types/types.js";
 })
 export class Client extends Model<ClientAttributes, ClientCreationAttributes> {
   @PrimaryKey
-  @Column(DataType.STRING(40))
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
   id!: string;
 
   @AllowNull(false)

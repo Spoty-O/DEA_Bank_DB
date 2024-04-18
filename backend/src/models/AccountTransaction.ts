@@ -7,11 +7,12 @@ import { AccountTransactionAttributes, AccountTransactionCreationAttributes } fr
 })
 export class AccountTransaction extends Model<AccountTransactionAttributes, AccountTransactionCreationAttributes> {
   @PrimaryKey
-  @Column(DataType.STRING(40))
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
   id!: string;
 
   @AllowNull(false)
-  @Column(DataType.FLOAT(15, 2))
+  @Column(DataType.DECIMAL(15, 2))
   amount!: number;
 
   @AllowNull(false)
@@ -29,14 +30,14 @@ export class AccountTransaction extends Model<AccountTransactionAttributes, Acco
   replicated!: boolean;
 
   @ForeignKey(() => BankAccount)
-  @Column(DataType.STRING(40))
+  @Column(DataType.UUID)
   bankAccountId!: string;
 
   @BelongsTo(() => BankAccount)
   bankAccount!: BankAccount;
 
   @ForeignKey(() => BankAccount)
-  @Column(DataType.STRING(40))
+  @Column(DataType.UUID)
   recipientBankAccountId!: string;
 
   @BelongsTo(() => BankAccount)

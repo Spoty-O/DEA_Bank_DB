@@ -3,12 +3,17 @@ import { Request, Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
 
 class ReplicationController {
-  async getUserByName(req: Request, res: Response, next: NextFunction) {
+  static async getUserByName(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName } = req.validatedQuery;
-      const replicationData = await Replication.findOne({ where: { firstName, lastName } });
+      const replicationData = await Replication.findOne({
+        where: { firstName, lastName },
+      });
       if (replicationData) {
-        return next(ApiError.conflict("User already added to your DB"));
+        req.replicationData = replicationData
+        if (replicationData.recipientDepartmentId === req.department.id) {
+          return next(ApiError.conflict("User already added to your DB"));
+        }
       }
       return next();
     } catch (error) {
@@ -17,11 +22,17 @@ class ReplicationController {
     }
   }
 
-  async createReplication(req: Request, res: Response, next: NextFunction) {
+  static async createReplication(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id: departmentId } = req.department;
+      const donor = req.departmentList[0];
       const { id: clientId, firstName, lastName } = req.user;
-      await Replication.create({ clientId, departmentId, firstName, lastName });
+      await Replication.create({
+        clientId,
+        donorDepartmentId: donor.id,
+        recipientDepartmentId: req.department.id,
+        firstName,
+        lastName,
+      });
       return;
     } catch (error) {
       console.log(error);
@@ -30,4 +41,4 @@ class ReplicationController {
   }
 }
 
-export default new ReplicationController();
+export default ReplicationController;

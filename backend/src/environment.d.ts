@@ -16,6 +16,7 @@ declare global {
       department: Department;
       user: Client;
       validatedQuery: RequestQuery;
+      APIKey: string;
     }
   }
 }

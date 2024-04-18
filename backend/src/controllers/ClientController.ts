@@ -2,16 +2,14 @@ import ApiError from "../helpers/ApiErrors.js";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { v4 as uuidv4 } from "uuid";
-import { ClientCreationAttributes } from "../types/types.js";
-import axios from "axios";
+import { ClientCreationAttributes, ClientFindByNameAttributes } from "../types/types.js";
+import AxiosRequest from "../helpers/AxiosRequest.js";
 
 class ClientController {
-  async initialize(): Promise<Client[]> {
+  static async initialize(): Promise<Client[]> {
     const clientsValues: ClientCreationAttributes[] = [];
     for (let i = 0; i < 5; i++) {
       clientsValues.push({
-        id: uuidv4(),
         firstName: getRandomName(),
         lastName: getRandomLastName(),
         phone: generateRandomPhoneNumber(),
@@ -20,7 +18,7 @@ class ClientController {
     return await Client.bulkCreate(clientsValues);
   }
 
-  async getAllClients(req: Request, res: Response, next: NextFunction) {
+  static async getAllClients(req: Request, res: Response, next: NextFunction) {
     try {
       const clients = await Client.findAll();
       res.json(clients);
@@ -30,7 +28,7 @@ class ClientController {
     }
   }
 
-  async getClientById(req: Request, res: Response, next: NextFunction) {
+  static async getClientById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       console.log(`id = ${id}`);
@@ -45,19 +43,15 @@ class ClientController {
     }
   }
 
-  async getClientByName(req: Request, res: Response, next: NextFunction) {
+  static async getClientByName(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.query);
-      const { firstName, lastName } = req.validatedQuery;
+      const { firstName, lastName, noReplicate } = req.validatedQuery;
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
-        const { data } = await axios.get<Client>("http://localhost:5000/api/replication/client", {
-          params: { firstName, lastName },
-        });
-        if (!data) {
-          return next(ApiError.notFound("Client not found"));
+        if (!noReplicate) {
+          return next();
         }
-        return res.json(await Client.create(data));
+        return next(ApiError.notFound("Client not found"));
       }
       return res.json(client);
     } catch (error) {
@@ -66,7 +60,26 @@ class ClientController {
     }
   }
 
-  async createClient(req: Request, res: Response, next: NextFunction) {
+  static async getClientFromMain(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { firstName, lastName } = req.validatedQuery;
+      const result = await AxiosRequest<Client, ClientFindByNameAttributes>(
+        "http://localhost:5000/api/replication/client",
+        { firstName, lastName },
+        process.argv[4],
+      );
+      if (result instanceof ApiError) {
+        return next(result);
+      }
+      console.log(result);
+      return res.json(await Client.create(result));
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  static async createClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, phone } = req.body;
       console.log(firstName, lastName, phone);
@@ -80,7 +93,6 @@ class ClientController {
       }
 
       const client = await Client.create({
-        id: uuidv4(),
         firstName,
         lastName,
         phone,
@@ -93,7 +105,7 @@ class ClientController {
     }
   }
 
-  async updateClient(req: Request, res: Response, next: NextFunction) {
+  static async updateClient(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { firstName, lastName, phone } = req.body;
@@ -122,4 +134,4 @@ class ClientController {
   }
 }
 
-export default new ClientController();
+export default ClientController;

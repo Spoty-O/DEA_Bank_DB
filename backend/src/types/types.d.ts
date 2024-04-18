@@ -7,15 +7,21 @@ interface DepartmentAttributes {
   city: string;
   phone: string;
   domain: string;
+  APIKey: string;
 }
+
+interface DepartmentCreationAttributes extends Optional<DepartmentAttributes, "id" | "APIKey"> {}
 
 interface ReplicationAttributes {
   id: number;
   clientId: string; // hash id
   firstName: string;
   lastName: string;
-  departmentId: number;
+  recipientDepartmentId: number;
+  donorDepartmentId: number;
 }
+
+interface ReplicationCreationAttributes extends Optional<ReplicationAttributes, "id"> {}
 
 interface ClientAttributes {
   id: string;
@@ -52,6 +58,7 @@ interface AccountTransactionCreationAttributes extends Optional<AccountTransacti
 interface RequestQuery {
   firstName: string;
   lastName: string;
+  noReplicate?: boolean;
 }
 
 export {
@@ -63,7 +70,9 @@ export {
   BankAccountAttributes,
   BankAccountCreationAttributes,
   DepartmentAttributes,
+  DepartmentCreationAttributes,
   ReplicationAttributes,
+  ReplicationCreationAttributes,
   RequestQuery,
   ApiError
 };

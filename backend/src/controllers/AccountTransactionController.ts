@@ -2,7 +2,6 @@ import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
 import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
-import { v4 as uuidv4 } from "uuid";
 import { AccountTransactionCreationAttributes } from "../types/types.js";
 
 class AccountTransactionController {
@@ -10,7 +9,6 @@ class AccountTransactionController {
     const accountTransactionsValues: AccountTransactionCreationAttributes[] = [];
     for (const bankAccount of bankAccounts) {
       accountTransactionsValues.push({
-        id: uuidv4(),
         amount: 500,
         date: new Date(),
         transactionType: "transfer",
@@ -57,7 +55,6 @@ class AccountTransactionController {
       await account.update({ balance: account.balance + Number(amount) });
 
       await AccountTransaction.create({
-        id: uuidv4(),
         amount,
         date: new Date(),
         transactionType: "deposit",
@@ -95,7 +92,6 @@ class AccountTransactionController {
       await account.update({ balance: account.balance - Number(amount) });
 
       await AccountTransaction.create({
-        id: uuidv4(),
         amount: -Number(amount),
         date: new Date(),
         transactionType: "withdrawal",
@@ -154,7 +150,6 @@ class AccountTransactionController {
         // Создаем запись о транзакции списания средств
         await AccountTransaction.create(
           {
-            id: uuidv4(),
             amount: -Number(amount),
             date: new Date(),
             transactionType: "transfer",
@@ -167,7 +162,6 @@ class AccountTransactionController {
         // Создаем запись о транзакции зачисления средств
         await AccountTransaction.create(
           {
-            id: uuidv4(),
             amount: Number(amount),
             date: new Date(),
             transactionType: "transfer",
