@@ -1,14 +1,16 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Request, Response, NextFunction } from "express";
-import { Client } from "../models/Client.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
-import { RequestQuery } from "../types/types.js";
 
 class MainServerController {
-  static async getUserFromDepartment(req: Request, res: Response, next: NextFunction) {
+  static async getFromDepartments<T>(
+    req: Request<undefined, undefined, undefined, T>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { firstName, lastName } = req.validatedQuery;
-      const requestsList: Promise<Client | ApiError>[] = [];
+      const { query } = req;
+      const requestsList: Promise<T | ApiError>[] = [];
       for (const department of req.departmentList) {
         if (
           department.id === req.department.id ||
@@ -16,13 +18,7 @@ class MainServerController {
         ) {
           continue;
         }
-        requestsList.push(
-          AxiosRequest<Client, RequestQuery>(department.domain + "/clients/find", {
-            firstName,
-            lastName,
-            noReplicate: true,
-          }),
-        );
+        requestsList.push(AxiosRequest(department.domain + req.reqURL, query));
         if (req.replicationData) {
           req.departmentList[0] = department;
           break;
@@ -32,7 +28,7 @@ class MainServerController {
       if (resultRequest instanceof ApiError) {
         return next(resultRequest);
       }
-      req.user = resultRequest;
+      req.data = resultRequest;
       res.json(resultRequest);
       return next();
     } catch (error) {

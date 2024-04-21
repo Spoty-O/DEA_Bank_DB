@@ -27,7 +27,7 @@ class DepartmentsController {
       if (!department) {
         return next(ApiError.notFound("Department by APIKey not found"));
       }
-      req.department = department;
+      req.recipientDepartment = department;
       next();
     } catch (error) {
       console.log(error);

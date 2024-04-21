@@ -14,7 +14,7 @@ replicationRouter.get(
   DepartmentController.getDepartmentByAPIKey,
   ReplicationController.getUserByName,
   DepartmentController.getDepartments,
-  MainServerController.getUserFromDepartment,
+  MainServerController.getFromDepartments,
   ReplicationController.createReplication,
 );
 

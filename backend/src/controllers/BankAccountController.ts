@@ -16,7 +16,7 @@ class BankAccountController {
     return await BankAccount.bulkCreate(bankAccountValues);
   }
 
-  async getBankAccount(req: Request, res: Response, next: NextFunction) {
+  async getBankAccountByClientId(req: Request, res: Response, next: NextFunction) {
     try {
       let bankAccount;
       const { id, clientId } = req.query;

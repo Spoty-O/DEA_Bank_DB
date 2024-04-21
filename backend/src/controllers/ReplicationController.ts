@@ -1,20 +1,21 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
+import { ClientAttributes, RequestQueryClientGet } from "../types/types.js";
 
 class ReplicationController {
-  static async getUserByName(req: Request, res: Response, next: NextFunction) {
+  static async getUserByName(req: ExtendedRequest<undefined, RequestQueryClientGet>, res: Response, next: NextFunction) {
     try {
-      const { firstName, lastName } = req.validatedQuery;
+      req.query.noReplicate = true;
+      const { firstName, lastName } = req.query;
       const replicationData = await Replication.findOne({
         where: { firstName, lastName },
       });
-      if (replicationData) {
-        req.replicationData = replicationData
-        if (replicationData.recipientDepartmentId === req.department.id) {
-          return next(ApiError.conflict("User already added to your DB"));
-        }
+      req.replicationData = replicationData;
+      if (replicationData?.recipientDepartmentId === req.recipientDepartment.id) {
+        return next(ApiError.conflict("User already added to your DB"));
       }
+      req.reqURL = "/clients/find";
       return next();
     } catch (error) {
       console.log(error);
@@ -22,10 +23,13 @@ class ReplicationController {
     }
   }
 
-  static async createReplication(req: Request, res: Response, next: NextFunction) {
+  static async createReplication(
+    req: Express.ExtendedRequest<undefined, undefined, undefined, ClientAttributes>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const donor = req.departmentList[0];
-      const { id: clientId, firstName, lastName } = req.user;
+      const { id: clientId, firstName, lastName } = req.data;
       await Replication.create({
         clientId,
         donorDepartmentId: donor.id,

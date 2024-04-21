@@ -55,7 +55,7 @@ interface AccountTransactionAttributes {
 
 interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "replicated" | "id" | "date"> {}
 
-interface RequestQuery {
+interface RequestQueryClientGet {
   firstName: string;
   lastName: string;
   noReplicate?: boolean;
@@ -73,6 +73,6 @@ export {
   DepartmentCreationAttributes,
   ReplicationAttributes,
   ReplicationCreationAttributes,
-  RequestQuery,
+  RequestQueryClientGet,
   ApiError
 };
