@@ -19,7 +19,7 @@ declare global {
     }
   }
 
-  type MyRequest<P = ParamsDictionary, ReqQuery = qs.ParsedQs, ReqBody = undefined, T = undefined> = Request<
+  type MyRequest<P = ParamsDictionary, ReqQuery = qs.ParsedQs, ReqBody = unknown, T = undefined> = Request<
     P,
     JSON,
     ReqBody,

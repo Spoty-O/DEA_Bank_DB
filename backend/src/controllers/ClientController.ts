@@ -4,7 +4,7 @@ import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { ClientAttributes } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
-import { TUserValidated } from "../schemas/ReplicationSchema.js";
+import { TClientCreateValidated, TClientGetValidated } from "../helpers/ZodSchemas/UserSchema.js";
 
 class ClientController {
   static async initialize(): Promise<Client[]> {
@@ -30,18 +30,24 @@ class ClientController {
   }
 
   static async getClientByName(
-    req: MyRequest<undefined, TUserValidated>,
+    req: MyRequest<{ id: string }, TClientGetValidated, TClientCreateValidated>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const { firstName, lastName, noReplicate } = req.query;
+      const { firstName, lastName, serverRequest } = req.query;
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
-        if (!noReplicate) {
-          return next();
+        if (serverRequest === "true") {
+          return next(ApiError.notFound("Client not found"));
         }
-        return next(ApiError.notFound("Client not found"));
+        return next();
+      }
+      if (serverRequest) {
+        client.replicated = true;
+        req.body = client;
+        req.params.id = client.id;
+        next();
       }
       return res.json(client);
     } catch (error) {
@@ -51,76 +57,53 @@ class ClientController {
   }
 
   static async getClientFromMain(
-    req: MyRequest<undefined, ClientAttributes>,
+    req: MyRequest<unknown, TClientGetValidated, ClientAttributes>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const { firstName, lastName } = req.query;
-      const result = await AxiosRequest<Client, ClientAttributes>(
+      const result = await AxiosRequest<Client, TClientGetValidated>(
         "http://localhost:5000/api/replication/client",
-        { firstName, lastName },
+        req.query,
         process.argv[4],
       );
       if (result instanceof ApiError) {
         return next(result);
       }
       console.log(result);
-      return res.json(await Client.create(result.data));
+      req.body = result.data;
+      return next();
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));
     }
   }
 
-  static async createClient(req: MyRequest<undefined, undefined, ClientAttributes>, res: Response, next: NextFunction) {
+  static async createClient(
+    req: MyRequest<{ id: string }, TClientGetValidated, TClientCreateValidated>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { firstName, lastName, phone } = req.body;
-      console.log(firstName, lastName, phone);
-      if (!firstName || !lastName || !phone) {
-        return next(ApiError.badRequest("firstName, lastName, phone are required"));
-      }
-
-      const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
-      if (!phone.match(phoneRegex)) {
-        return next(ApiError.badRequest("Phone number is invalid format (123-456-7890)"));
-      }
-
-      const client = await Client.create({
-        firstName,
-        lastName,
-        phone,
-      });
-
-      res.json(client);
+      const client = await Client.create(req.body);
+      return res.json(client);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error creating client"));
     }
   }
 
-  static async updateClient(req: MyRequest<ClientAttributes, undefined, ClientAttributes>, res: Response, next: NextFunction) {
+  static async updateClient(req: MyRequest<{ id: string }, unknown, Client>, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { firstName, lastName, phone } = req.body;
 
       if (!id) return next(ApiError.badRequest("clientId is required"));
 
-      if (!firstName || !lastName || !phone) {
-        return next(ApiError.badRequest("firstName, lastName, phone are required"));
-      }
-
-      const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
-      if (!phone.match(phoneRegex)) {
-        return next(ApiError.badRequest("Phone number is invalid format (123-456-7890)"));
-      }
-
       const client = await Client.findByPk(id);
       if (!client) return next(ApiError.notFound("Client not found"));
+      await client.update(req.body.dataValues);
 
-      await Client.update({ firstName, lastName, phone }, { where: { id } });
-
-      res.json(client);
+      return res.json(client);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error updating client"));

@@ -4,7 +4,7 @@ import AxiosRequest from "../helpers/AxiosRequest.js";
 import { AxiosResponse } from "axios";
 
 class MainServerController {
-  static async getFromDepartments<T>(req: MyRequest<undefined, undefined, undefined, T>, res: Response, next: NextFunction) {
+  static async getFromDepartments<T>(req: MyRequest<unknown, unknown, unknown, T>, res: Response, next: NextFunction) {
     try {
       const { query } = req;
       const requestsList: Promise<AxiosResponse<T> | ApiError>[] = [];

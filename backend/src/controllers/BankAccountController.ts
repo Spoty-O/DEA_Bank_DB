@@ -4,6 +4,7 @@ import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { BankAccountAttributes } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
+import { TBankAccountValidated } from "../helpers/ZodSchemas/BankSchema.js";
 
 class BankAccountController {
   static async initialize(clients: Client[]): Promise<BankAccount[]> {
@@ -18,7 +19,7 @@ class BankAccountController {
   }
 
   static async getBankAccountByClientId(
-    req: MyRequest<unknown, BankAccountAttributes>,
+    req: MyRequest<unknown, TBankAccountValidated>,
     res: Response,
     next: NextFunction,
   ) {

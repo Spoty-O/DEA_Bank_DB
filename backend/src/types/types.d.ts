@@ -45,8 +45,8 @@ interface AccountTransactionAttributes {
 
 type RequestParamsGet<T> = Partial<T>;
 
-type RequestQueryGet<T> = Partial<T> & {
-  noReplicate?: string;
+type RequestQuery<K extends keyof T> = {
+  [K: string]: T[K];
 };
 
 export {
@@ -55,7 +55,7 @@ export {
   AccountTransactionAttributes,
   DepartmentAttributes,
   ReplicationAttributes,
-  RequestQueryGet,
+  RequestQuery,
   RequestParamsGet,
   ApiError,
 };
