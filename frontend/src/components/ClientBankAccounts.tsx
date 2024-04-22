@@ -12,7 +12,7 @@ interface BankAccountDataProps {
 
 const BankAccount: FC<BankAccountDataProps> = ({ clientId, setState }) => {
   const { data: BankAccount } =
-    API.useGetClientBalanceByClientIdQuery(clientId);
+    API.useGetClientBankAccountsByClientIdQuery(clientId);
 
   return (
     <>

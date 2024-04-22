@@ -10,11 +10,11 @@ import {
   ClientAttributes,
   ClientFindByNameAttributes,
 } from '@backend/types';
-import ClientBalance from './ClientBalance';
+import ClientBankAccounts from './ClientBankAccounts';
 import BankAccountTransactions from './BankAccountTransactions';
 import CreateClient from './CreateClient';
 import CreateBankAccount from './CreateBankAccount';
-import UpdateBalance from './UpdateBalance';
+import UpdateBankAccounts from './UpdateBankAccounts';
 import CreateTransaction from './CreateTransaction';
 
 const Clients = () => {
@@ -114,7 +114,7 @@ const Clients = () => {
         // Получение баланса клиента
         <div className="flex gap-5 w-full flex-col xl:flex-row">
           <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
-            <ClientBalance clientId={client.id} setState={setBankAccount} />
+            <ClientBankAccounts clientId={client.id} setState={setBankAccount} />
           </Card>
           <div className="flex gap-3 flex-wrap md:flex-nowrap xl:flex-wrap 2xl:flex-nowrap">
             <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
@@ -131,7 +131,7 @@ const Clients = () => {
                   <h3 className="flex justify-center font-bold mb-2 uppercase">
                     update bank account
                   </h3>
-                  <UpdateBalance
+                  <UpdateBankAccounts
                     bankAccount={bankAccount}
                     setBankAccount={setBankAccount}
                   />

@@ -69,9 +69,9 @@ export const API = createApi({
     }),
 
     // Получение баланса клиента
-    getClientBalanceByClientId: build.query<BankAccountAttributes[], string>({
+    getClientBankAccountsByClientId: build.query<BankAccountAttributes[], string>({
       query: (clientId) => ({
-        url: 'balance',
+        url: 'bankAccounts',
         method: 'GET',
         params: {
           clientId,
@@ -86,7 +86,7 @@ export const API = createApi({
       BankAccountCreationAttributes
     >({
       query: (data) => ({
-        url: 'balance',
+        url: 'bankAccounts',
         method: 'POST',
         body: data,
       }),
@@ -99,7 +99,7 @@ export const API = createApi({
       BankAccountAttributes
     >({
       query: (data) => ({
-        url: `balance/${data.id}`,
+        url: `bankAccounts/${data.id}`,
         method: 'PATCH',
         body: data,
       }),

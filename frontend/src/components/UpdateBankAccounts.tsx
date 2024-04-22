@@ -13,14 +13,14 @@ function updateData(
   return updated;
 }
 
-interface BalanceProps {
+interface BankAccountsProps {
   bankAccount: BankAccountAttributes;
   setBankAccount: React.Dispatch<
     React.SetStateAction<BankAccountAttributes | undefined>
   >;
 }
 
-const UpdateBalance: React.FC<BalanceProps> = ({
+const UpdateBankAccounts: React.FC<BankAccountsProps> = ({
   bankAccount,
   setBankAccount,
 }) => {
@@ -70,4 +70,4 @@ const UpdateBalance: React.FC<BalanceProps> = ({
   );
 };
 
-export default UpdateBalance;
+export default UpdateBankAccounts;
