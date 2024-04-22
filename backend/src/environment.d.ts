@@ -1,7 +1,7 @@
 import { Locals, Request } from "express";
 import { Department } from "./models/Department.ts";
 import { ParamsDictionary } from "express-serve-static-core";
-import { RequestParamsGet, RequestQueryGet } from "./types/types.js";
+// import { RequestQueryGet } from "./types/types.js";
 
 interface MyLocals<T> {
   departmentList?: Department[];
@@ -20,10 +20,10 @@ declare global {
   }
 
   type MyRequest<P = ParamsDictionary, ReqQuery = qs.ParsedQs, ReqBody = undefined, T = undefined> = Request<
-    RequestParamsGet<P>,
+    P,
     JSON,
     ReqBody,
-    RequestQueryGet<ReqQuery>,
+    ReqQuery,
     Locals
   > &
     MyLocals<T>;

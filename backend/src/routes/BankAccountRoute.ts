@@ -1,7 +1,7 @@
 import { Router } from "express";
 import BankAccountController from "../controllers/BankAccountController.js";
 import validation from "../middleware/validationMiddleware.js";
-import { joiBankAccountGetSchema } from "../helpers/joiSchems/bankAccountSchems.js";
+import { joiBankAccountGetSchema } from "../schemas/BankSchema.js";
 const bankAccountRouter = Router();
 
 bankAccountRouter.get("/", validation(joiBankAccountGetSchema), BankAccountController.getBankAccountByClientId, BankAccountController.getBankAccountFromMain);

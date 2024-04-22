@@ -2,10 +2,10 @@ import { Router } from "express";
 import ReplicationController from "../controllers/ReplicationController.js";
 import DepartmentController from "../controllers/DepartmentController.js";
 import validation from "../middleware/validationMiddleware.js";
-import { joiUserGetSchema } from "../helpers/joiSchems/replicationSchems.js";
+import { joiUserGetSchema } from "../schemas/ReplicationSchema.js";
 import MainServerController from "../controllers/MainServerController.js";
 import authDepartmentMiddleware from "../middleware/authDepartmentMiddleware.js";
-import { joiBankAccountGetSchema } from "../helpers/joiSchems/bankAccountSchems.js";
+import { joiBankAccountGetSchema } from "../schemas/BankSchema.js";
 const replicationRouter = Router();
 
 replicationRouter.get(

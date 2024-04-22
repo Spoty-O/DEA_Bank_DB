@@ -1,16 +1,18 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
-import { BankAccountAttributes, ClientAttributes } from "../types/types.js";
+import { ClientAttributes } from "../types/types.js";
+import { TBankAccount } from "../schemas/BankSchema.js";
+import { TUserValidated } from "../schemas/ReplicationSchema.js";
 
 class ReplicationController {
   static async getUserByName(
-    req: MyRequest<undefined, ClientAttributes>,
+    req: MyRequest<undefined, TUserValidated>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      req.query.noReplicate = "true";
+      req.query.noReplicate = true;
       const { firstName, lastName } = req.query;
       if (!req.recipientDepartment) {
         return next(ApiError.internal("Controllers don't save required data: recipientDepartment"))
@@ -30,12 +32,12 @@ class ReplicationController {
   }
 
   static async getBankAccountByClientId(
-    req: MyRequest<undefined, BankAccountAttributes>,
+    req: MyRequest<undefined, TBankAccount>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      req.query.noReplicate = "true";
+      req.query.noReplicate = true;
       // const { clientId } = req.query;
       // const replicationData = await Replication.findOne({
       //   where: { clientId, recipientDepartmentId: req.recipientDepartment.id },

@@ -43,12 +43,9 @@ interface AccountTransactionAttributes {
   replicated?: boolean;
 }
 
-type RequestParamsGet<T> = T & {
-  [key: string]: string;
-};
+type RequestParamsGet<T> = Partial<T>;
 
-type RequestQueryGet<T> = T & {
-  [key: string]: string;
+type RequestQueryGet<T> = Partial<T> & {
   noReplicate?: string;
 };
 

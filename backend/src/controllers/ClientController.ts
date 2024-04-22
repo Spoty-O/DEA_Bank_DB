@@ -4,6 +4,7 @@ import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
 import { ClientAttributes } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
+import { TUserValidated } from "../schemas/ReplicationSchema.js";
 
 class ClientController {
   static async initialize(): Promise<Client[]> {
@@ -28,23 +29,8 @@ class ClientController {
     }
   }
 
-  // static async getClientById(req: MyRequest<>, res: Response, next: NextFunction) {
-  //   try {
-  //     const { id } = req.params;
-  //     console.log(`id = ${id}`);
-  //     const client = await Client.findByPk(id);
-  //     if (!client) {
-  //       return next(ApiError.notFound("Client not found"));
-  //     }
-  //     res.json(client);
-  //   } catch (error) {
-  //     console.log(error);
-  //     return next(ApiError.internal("Error getting client"));
-  //   }
-  // }
-
   static async getClientByName(
-    req: MyRequest<undefined, ClientAttributes>,
+    req: MyRequest<undefined, TUserValidated>,
     res: Response,
     next: NextFunction,
   ) {
@@ -57,7 +43,6 @@ class ClientController {
         }
         return next(ApiError.notFound("Client not found"));
       }
-      await client.update({ replicated: true });
       return res.json(client);
     } catch (error) {
       console.log(error);

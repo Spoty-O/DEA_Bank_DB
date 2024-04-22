@@ -1,7 +1,7 @@
 import { Router } from "express";
 import ClientController from "../controllers/ClientController.js";
 import validation from "../middleware/validationMiddleware.js";
-import { joiUserGetSchema } from "../helpers/joiSchems/replicationSchems.js";
+import { joiUserGetSchema } from "../schemas/ReplicationSchema.js";
 const clientRouter = Router();
 
 clientRouter.get("/find", validation(joiUserGetSchema), ClientController.getClientByName, ClientController.getClientFromMain);
