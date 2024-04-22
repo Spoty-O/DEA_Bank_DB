@@ -2,7 +2,7 @@ import ApiError from "../helpers/ApiErrors.js";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { ClientCreationAttributes, ClientFindByNameAttributes } from "../types/types.js";
+import { ClientCreationAttributes, ClientFindByNameAttributes, RequestQueryGet } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
 
 class ClientController {
@@ -43,9 +43,13 @@ class ClientController {
     }
   }
 
-  static async getClientByName(req: Request, res: Response, next: NextFunction) {
+  static async getClientByName(
+    req: Request<unknown, unknown, unknown, RequestQueryGet<ClientFindByNameAttributes>>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { firstName, lastName, noReplicate } = req.validatedQuery;
+      const { firstName, lastName, noReplicate } = req.query;
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
         if (!noReplicate) {
@@ -61,9 +65,13 @@ class ClientController {
     }
   }
 
-  static async getClientFromMain(req: Request, res: Response, next: NextFunction) {
+  static async getClientFromMain(
+    req: Request<unknown, unknown, unknown, RequestQueryGet<ClientFindByNameAttributes>>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { firstName, lastName } = req.validatedQuery;
+      const { firstName, lastName } = req.query;
       const result = await AxiosRequest<Client, ClientFindByNameAttributes>(
         "http://localhost:5000/api/replication/client",
         { firstName, lastName },
@@ -73,7 +81,7 @@ class ClientController {
         return next(result);
       }
       console.log(result);
-      return res.json(await Client.create(result));
+      return res.json(await Client.create(result.data));
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));

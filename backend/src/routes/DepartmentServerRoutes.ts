@@ -5,7 +5,7 @@ import transactionRouter from "./TransactionRoute.js";
 const departmentServerRoutes = Router();
 
 departmentServerRoutes.use("/clients", clientRouter);
-departmentServerRoutes.use("/balance", bankAccountRouter);
+departmentServerRoutes.use("/bankAccounts", bankAccountRouter);
 departmentServerRoutes.use("/transactions", transactionRouter);
 
 export default departmentServerRoutes;

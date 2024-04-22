@@ -34,6 +34,22 @@ class DepartmentsController {
       return next(ApiError.internal("Error getting departments"));
     }
   }
+
+  static async getDepartmentByDomain(req: Request, res: Response, next: NextFunction) {
+    try {
+      const department = await Department.findOne({
+        where: { domain: req.reqURL.substring(0, req.reqURL.indexOf("/api") + 4) },
+      });
+      if (!department) {
+        return next(ApiError.notFound("Department by domain not found"));
+      }
+      req.donorDepartment = department;
+      next();
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting departments"));
+    }
+  }
 }
 
 export default DepartmentsController;

@@ -42,6 +42,7 @@ interface BankAccountAttributes {
 }
 
 interface BankAccountCreationAttributes extends Optional<BankAccountAttributes, "replicated" | "id"> {}
+interface BankAccountFindAttributes extends Optional<BankAccountCreationAttributes, "balance"> {}
 
 interface AccountTransactionAttributes {
   id: string;
@@ -54,25 +55,27 @@ interface AccountTransactionAttributes {
 }
 
 interface AccountTransactionCreationAttributes extends Optional<AccountTransactionAttributes, "replicated" | "id" | "date"> {}
+interface AccountTransactionFindAttributes extends Optional<AccountTransactionCreationAttributes, "amount" | "recipientBankAccountId" | "transactionType"> {}
 
-interface RequestQueryClientGet {
-  firstName: string;
-  lastName: string;
-  noReplicate?: boolean;
+type RequestQueryGet<T> = T & {
+  [key: string]: string;
+  noReplicate?: string;
 }
 
 export {
   ClientAttributes,
   ClientCreationAttributes,
   ClientFindByNameAttributes,
-  AccountTransactionAttributes,
-  AccountTransactionCreationAttributes,
   BankAccountAttributes,
   BankAccountCreationAttributes,
+  BankAccountFindAttributes,
+  AccountTransactionAttributes,
+  AccountTransactionCreationAttributes,
+  AccountTransactionFindAttributes,
   DepartmentAttributes,
   DepartmentCreationAttributes,
   ReplicationAttributes,
   ReplicationCreationAttributes,
-  RequestQueryClientGet,
+  RequestQueryGet,
   ApiError
 };

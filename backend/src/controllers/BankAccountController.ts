@@ -2,10 +2,11 @@ import ApiError from "../helpers/ApiErrors.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { Request, Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { BankAccountCreationAttributes } from "../types/types.js";
+import { BankAccountCreationAttributes, BankAccountFindAttributes, RequestQueryGet } from "../types/types.js";
+import AxiosRequest from "../helpers/AxiosRequest.js";
 
 class BankAccountController {
-  async initialize(clients: Client[]): Promise<BankAccount[]> {
+  static async initialize(clients: Client[]): Promise<BankAccount[]> {
     const bankAccountValues: BankAccountCreationAttributes[] = [];
     for (const client of clients) {
       bankAccountValues.push({
@@ -16,31 +17,56 @@ class BankAccountController {
     return await BankAccount.bulkCreate(bankAccountValues);
   }
 
-  async getBankAccountByClientId(req: Request, res: Response, next: NextFunction) {
+  static async getBankAccountByClientId(
+    req: Request<unknown, unknown, unknown, RequestQueryGet<BankAccountFindAttributes>>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      let bankAccount;
-      const { id, clientId } = req.query;
-      console.log(`id = ${id}`);
-
-      if (typeof id === "string") {
-        bankAccount = await BankAccount.findAll({ where: { id } });
-      } else if (typeof clientId === "string") {
-        bankAccount = await BankAccount.findAll({ where: { clientId } });
-      } else {
-        return next(ApiError.badRequest("id or clientId is required"));
-      }
+      const { clientId, noReplicate } = req.query;
+      const bankAccount = await BankAccount.findAll({ where: { clientId } });
 
       if (!bankAccount) {
-        return next(ApiError.notFound("Bank account not found"));
+        return next();
       }
-      res.json(bankAccount);
+      if (!bankAccount) {
+        if (!noReplicate) {
+          return next();
+        }
+        return next(ApiError.notFound("BankAccount not found"));
+      }
+      await BankAccount.update({ replicated: true }, { where: { clientId } });
+      return res.json(bankAccount);
     } catch (error) {
       // console.log(error);
       return next(ApiError.internal("Error getting bank account"));
     }
   }
 
-  async createBankAccount(req: Request, res: Response, next: NextFunction) {
+  static async getBankAccountFromMain(
+    req: Request<unknown, unknown, unknown, RequestQueryGet<BankAccountFindAttributes>>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { clientId } = req.query;
+      const result = await AxiosRequest<BankAccount[], RequestQueryGet<BankAccountFindAttributes>>(
+        "http://localhost:5000/api/replication/bankAccounts",
+        { clientId },
+        process.argv[4],
+      );
+      if (result instanceof ApiError) {
+        return next(result);
+      }
+      console.log(result);
+      return res.json(await BankAccount.bulkCreate(result.data));
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  static async createBankAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const { balance, clientId } = req.body;
 
@@ -65,7 +91,7 @@ class BankAccountController {
     }
   }
 
-  async updateBankAccount(req: Request, res: Response, next: NextFunction) {
+  static async updateBankAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { balance, clientId } = req.body;
@@ -92,4 +118,4 @@ class BankAccountController {
   }
 }
 
-export default new BankAccountController();
+export default BankAccountController;
