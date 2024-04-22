@@ -1,8 +1,8 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
-import { AccountTransactionCreationAttributes } from "../types/types.js";
+import { AccountTransactionCreationAttributes, AccountTransactionFindAttributes } from "../types/types.js";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
@@ -19,16 +19,16 @@ class AccountTransactionController {
     return await AccountTransaction.bulkCreate(accountTransactionsValues);
   }
 
-  async get_transactions(req: Request, res: Response, next: NextFunction) {
+  async get_transactions(req: MyRequest<AccountTransactionFindAttributes>, res: Response, next: NextFunction) {
     //добавить типизацию
     try {
-      const { accountId } = req.params;
+      const { bankAccountId } = req.params;
 
-      if (!accountId) {
+      if (!bankAccountId) {
         return next(ApiError.badRequest("accountId are required"));
       }
 
-      const transactions = await AccountTransaction.findAll({ where: { bankAccountId: accountId } });
+      const transactions = await AccountTransaction.findAll({ where: { bankAccountId } });
       res.json(transactions);
     } catch (error) {
       console.log(error);
@@ -36,7 +36,7 @@ class AccountTransactionController {
     }
   }
 
-  async deposit(req: Request, res: Response, next: NextFunction) {
+  async deposit(req: MyRequest, res: Response, next: NextFunction) {
     try {
       const { bankAccountId, amount } = req.body;
       console.log(1111111000, bankAccountId, amount)
@@ -69,7 +69,7 @@ class AccountTransactionController {
     }
   }
 
-  async withdraw(req: Request, res: Response, next: NextFunction) {
+  async withdraw(req: MyRequest, res: Response, next: NextFunction) {
     try {
       const { bankAccountId, amount } = req.body;
 
@@ -106,7 +106,7 @@ class AccountTransactionController {
     }
   }
 
-  async performTransfer(req: Request, res: Response, next: NextFunction) {
+  async performTransfer(req: MyRequest, res: Response, next: NextFunction) {
     try {
       // Получаем данные из запроса
       const { bankAccountId, recipientBankAccountId, amount } = req.body;
