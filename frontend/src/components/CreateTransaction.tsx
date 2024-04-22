@@ -16,6 +16,7 @@ interface TransactionProps {
 }
 
 const CreateTransaction: React.FC<TransactionProps> = ({ bankAccountId }) => {
+  console.log(bankAccountId);
   const [createTransaction, { error }] = API.useCreateTransactionMutation();
   const [formData, setFormData] =
     useState<AccountTransactionCreationAttributes>({
@@ -42,7 +43,7 @@ const CreateTransaction: React.FC<TransactionProps> = ({ bankAccountId }) => {
 
   const handler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+    formData.bankAccountId = bankAccountId;
     await createTransaction(formData);
   };
 
