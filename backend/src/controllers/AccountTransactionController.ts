@@ -39,7 +39,7 @@ class AccountTransactionController {
   async deposit(req: Request, res: Response, next: NextFunction) {
     try {
       const { bankAccountId, amount } = req.body;
-
+      console.log(1111111000, bankAccountId, amount)
       if (!bankAccountId || !amount) {
         return next(ApiError.badRequest("bankAccountId and amount are required"));
       }
@@ -51,9 +51,9 @@ class AccountTransactionController {
       if (!account) {
         return next(ApiError.badRequest("Account not found!"));
       }
-
-      await account.update({ balance: account.balance + Number(amount) });
-
+      console.log(111111111, account.balance)
+      const resul = await account.update({ balance: Number(account.balance) + Number(amount) });
+      console.log(222222222, resul)
       await AccountTransaction.create({
         amount,
         date: new Date(),
@@ -85,11 +85,11 @@ class AccountTransactionController {
         return next(ApiError.badRequest("Account not found!"));
       }
 
-      if (account.balance < Number(amount)) {
+      if (Number(account.balance) < Number(amount)) {
         return next(ApiError.badRequest("Insufficient funds!"));
       }
 
-      await account.update({ balance: account.balance - Number(amount) });
+      await account.update({ balance: Number(account.balance) - Number(amount) });
 
       await AccountTransaction.create({
         amount: -Number(amount),
@@ -130,7 +130,7 @@ class AccountTransactionController {
       }
 
       // Проверяем достаточность средств на счете отправителя
-      if (senderAccount.balance < Number(amount)) {
+      if (Number(senderAccount.balance) < Number(amount)) {
         return next(ApiError.badRequest("Insufficient funds"));
       }
 
@@ -144,8 +144,8 @@ class AccountTransactionController {
       // Начинаем транзакцию
       await sequelize.transaction(async (transaction) => {
         // Обновляем балансы отправителя и получателя
-        await senderAccount.update({ balance: senderAccount.balance - Number(amount) }, { transaction });
-        await recipientAccount.update({ balance: recipientAccount.balance + Number(amount) }, { transaction });
+        await senderAccount.update({ balance: Number(senderAccount.balance) - Number(amount) }, { transaction });
+        await recipientAccount.update({ balance: Number(recipientAccount.balance) + Number(amount) }, { transaction });
 
         // Создаем запись о транзакции списания средств
         await AccountTransaction.create(
