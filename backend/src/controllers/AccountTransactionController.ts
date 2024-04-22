@@ -2,11 +2,11 @@ import ApiError from "../helpers/ApiErrors.js";
 import { Response, NextFunction } from "express";
 import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
-import { AccountTransactionCreationAttributes, AccountTransactionFindAttributes } from "../types/types.js";
+import { AccountTransactionAttributes } from "../types/types.js";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
-    const accountTransactionsValues: AccountTransactionCreationAttributes[] = [];
+    const accountTransactionsValues: AccountTransactionAttributes[] = [];
     for (const bankAccount of bankAccounts) {
       accountTransactionsValues.push({
         amount: 500,
@@ -19,7 +19,7 @@ class AccountTransactionController {
     return await AccountTransaction.bulkCreate(accountTransactionsValues);
   }
 
-  async get_transactions(req: MyRequest<AccountTransactionFindAttributes>, res: Response, next: NextFunction) {
+  async get_transactions(req: MyRequest<AccountTransactionAttributes>, res: Response, next: NextFunction) {
     //добавить типизацию
     try {
       const { bankAccountId } = req.params;
@@ -36,7 +36,7 @@ class AccountTransactionController {
     }
   }
 
-  async deposit(req: MyRequest, res: Response, next: NextFunction) {
+  async deposit(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
     try {
       const { bankAccountId, amount } = req.body;
       console.log(1111111000, bankAccountId, amount)
@@ -69,7 +69,7 @@ class AccountTransactionController {
     }
   }
 
-  async withdraw(req: MyRequest, res: Response, next: NextFunction) {
+  async withdraw(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
     try {
       const { bankAccountId, amount } = req.body;
 
@@ -106,7 +106,7 @@ class AccountTransactionController {
     }
   }
 
-  async performTransfer(req: MyRequest, res: Response, next: NextFunction) {
+  async performTransfer(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
     try {
       // Получаем данные из запроса
       const { bankAccountId, recipientBankAccountId, amount } = req.body;

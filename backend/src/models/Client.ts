@@ -1,11 +1,11 @@
 import { AllowNull, Column, HasMany, Model, Table, DataType, PrimaryKey, Default } from "sequelize-typescript";
 import { BankAccount } from "./BankAccount.js";
-import { ClientAttributes, ClientCreationAttributes } from "../types/types.js";
+import { ClientAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
 })
-export class Client extends Model<ClientAttributes, ClientCreationAttributes> {
+export class Client extends Model<ClientAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

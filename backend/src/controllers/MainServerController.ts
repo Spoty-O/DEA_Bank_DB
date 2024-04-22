@@ -1,13 +1,16 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import AxiosRequest from "../helpers/AxiosRequest.js";
 import { AxiosResponse } from "axios";
 
 class MainServerController {
-  static async getFromDepartments<T>(req: Request, res: Response, next: NextFunction) {
+  static async getFromDepartments<T>(req: MyRequest<undefined, undefined, undefined, T>, res: Response, next: NextFunction) {
     try {
       const { query } = req;
       const requestsList: Promise<AxiosResponse<T> | ApiError>[] = [];
+      if (!req.departmentList || !req.recipientDepartment) {
+        return next(ApiError.internal("Controllers don't save required data: departmentList or recipientDepartment"))
+      }
       for (const department of req.departmentList) {
         if (department.id === req.recipientDepartment.id) {
           continue;

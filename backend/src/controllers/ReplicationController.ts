@@ -1,17 +1,20 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { Replication } from "../models/Replication.js";
-import { BankAccountFindAttributes, ClientAttributes, ClientFindByNameAttributes, RequestQueryGet } from "../types/types.js";
+import { BankAccountAttributes, ClientAttributes } from "../types/types.js";
 
 class ReplicationController {
   static async getUserByName(
-    req: Request<unknown, unknown, unknown, RequestQueryGet<ClientFindByNameAttributes>>,
+    req: MyRequest<undefined, ClientAttributes>,
     res: Response,
     next: NextFunction,
   ) {
     try {
       req.query.noReplicate = "true";
       const { firstName, lastName } = req.query;
+      if (!req.recipientDepartment) {
+        return next(ApiError.internal("Controllers don't save required data: recipientDepartment"))
+      }
       const replicationData = await Replication.findOne({
         where: { firstName, lastName, recipientDepartmentId: req.recipientDepartment.id },
       });
@@ -27,7 +30,7 @@ class ReplicationController {
   }
 
   static async getBankAccountByClientId(
-    req: Request<unknown, unknown, unknown, RequestQueryGet<BankAccountFindAttributes>>,
+    req: MyRequest<undefined, BankAccountAttributes>,
     res: Response,
     next: NextFunction,
   ) {
@@ -48,13 +51,17 @@ class ReplicationController {
     }
   }
 
-  static async createReplication(req: Request, res: Response, next: NextFunction) {
+  static async createReplication(req: MyRequest<undefined, undefined, undefined, ClientAttributes>, res: Response, next: NextFunction) {
     try {
-      const { id: clientId, firstName, lastName } = <ClientAttributes>req.data;
+      const {data, donorDepartment, recipientDepartment} = req
+      if (!data || !donorDepartment || !recipientDepartment) {
+        return next(ApiError.internal("Controllers don't save required data: recipientDepartment or donorDepartment or data"))
+      }
+      const { id: clientId, firstName, lastName } = data;
       await Replication.create({
         clientId,
-        donorDepartmentId: req.donorDepartment.id,
-        recipientDepartmentId: req.recipientDepartment.id,
+        donorDepartmentId: donorDepartment.id,
+        recipientDepartmentId: recipientDepartment.id,
         firstName,
         lastName,
       });

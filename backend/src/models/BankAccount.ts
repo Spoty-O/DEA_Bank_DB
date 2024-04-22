@@ -12,12 +12,12 @@ import {
 } from "sequelize-typescript";
 import { AccountTransaction } from "./AccountTransaction.js";
 import { Client } from "./Client.js";
-import { BankAccountAttributes, BankAccountCreationAttributes } from "../types/types.js";
+import { BankAccountAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
 })
-export class BankAccount extends Model<BankAccountAttributes, BankAccountCreationAttributes> {
+export class BankAccount extends Model<BankAccountAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

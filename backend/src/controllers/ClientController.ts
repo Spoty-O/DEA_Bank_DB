@@ -1,13 +1,13 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { generateRandomPhoneNumber, getRandomLastName, getRandomName } from "../helpers/GenerateClientEntries.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { ClientCreationAttributes, ClientFindByNameAttributes, RequestQueryGet } from "../types/types.js";
+import { ClientAttributes } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
 
 class ClientController {
   static async initialize(): Promise<Client[]> {
-    const clientsValues: ClientCreationAttributes[] = [];
+    const clientsValues: ClientAttributes[] = [];
     for (let i = 0; i < 5; i++) {
       clientsValues.push({
         firstName: getRandomName(),
@@ -18,7 +18,7 @@ class ClientController {
     return await Client.bulkCreate(clientsValues);
   }
 
-  static async getAllClients(req: Request, res: Response, next: NextFunction) {
+  static async getAllClients(req: MyRequest, res: Response, next: NextFunction) {
     try {
       const clients = await Client.findAll();
       res.json(clients);
@@ -28,23 +28,23 @@ class ClientController {
     }
   }
 
-  static async getClientById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      console.log(`id = ${id}`);
-      const client = await Client.findByPk(id);
-      if (!client) {
-        return next(ApiError.notFound("Client not found"));
-      }
-      res.json(client);
-    } catch (error) {
-      console.log(error);
-      return next(ApiError.internal("Error getting client"));
-    }
-  }
+  // static async getClientById(req: MyRequest<>, res: Response, next: NextFunction) {
+  //   try {
+  //     const { id } = req.params;
+  //     console.log(`id = ${id}`);
+  //     const client = await Client.findByPk(id);
+  //     if (!client) {
+  //       return next(ApiError.notFound("Client not found"));
+  //     }
+  //     res.json(client);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return next(ApiError.internal("Error getting client"));
+  //   }
+  // }
 
   static async getClientByName(
-    req: Request<unknown, unknown, unknown, RequestQueryGet<ClientFindByNameAttributes>>,
+    req: MyRequest<undefined, ClientAttributes>,
     res: Response,
     next: NextFunction,
   ) {
@@ -66,13 +66,13 @@ class ClientController {
   }
 
   static async getClientFromMain(
-    req: Request<unknown, unknown, unknown, RequestQueryGet<ClientFindByNameAttributes>>,
+    req: MyRequest<undefined, ClientAttributes>,
     res: Response,
     next: NextFunction,
   ) {
     try {
       const { firstName, lastName } = req.query;
-      const result = await AxiosRequest<Client, ClientFindByNameAttributes>(
+      const result = await AxiosRequest<Client, ClientAttributes>(
         "http://localhost:5000/api/replication/client",
         { firstName, lastName },
         process.argv[4],
@@ -88,7 +88,7 @@ class ClientController {
     }
   }
 
-  static async createClient(req: Request, res: Response, next: NextFunction) {
+  static async createClient(req: MyRequest<undefined, undefined, ClientAttributes>, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, phone } = req.body;
       console.log(firstName, lastName, phone);
@@ -114,7 +114,7 @@ class ClientController {
     }
   }
 
-  static async updateClient(req: Request, res: Response, next: NextFunction) {
+  static async updateClient(req: MyRequest<ClientAttributes, undefined, ClientAttributes>, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { firstName, lastName, phone } = req.body;

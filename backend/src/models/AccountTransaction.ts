@@ -1,11 +1,11 @@
 import { AllowNull, Model, Table, DataType, ForeignKey, BelongsTo, Column, PrimaryKey, Default } from "sequelize-typescript";
 import { BankAccount } from "./BankAccount.js";
-import { AccountTransactionAttributes, AccountTransactionCreationAttributes } from "../types/types.js";
+import { AccountTransactionAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
 })
-export class AccountTransaction extends Model<AccountTransactionAttributes, AccountTransactionCreationAttributes> {
+export class AccountTransaction extends Model<AccountTransactionAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

@@ -2,12 +2,12 @@ import ApiError from "../helpers/ApiErrors.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { BankAccountCreationAttributes, BankAccountFindAttributes, RequestQueryGet } from "../types/types.js";
+import { BankAccountAttributes } from "../types/types.js";
 import AxiosRequest from "../helpers/AxiosRequest.js";
 
 class BankAccountController {
   static async initialize(clients: Client[]): Promise<BankAccount[]> {
-    const bankAccountValues: BankAccountCreationAttributes[] = [];
+    const bankAccountValues: BankAccountAttributes[] = [];
     for (const client of clients) {
       bankAccountValues.push({
         balance: 1000,
@@ -18,7 +18,7 @@ class BankAccountController {
   }
 
   static async getBankAccountByClientId(
-    req: MyRequest<unknown, RequestQueryGet<BankAccountFindAttributes>>,
+    req: MyRequest<unknown, BankAccountAttributes>,
     res: Response,
     next: NextFunction,
   ) {
@@ -36,13 +36,13 @@ class BankAccountController {
   }
 
   static async getBankAccountFromMain(
-    req: MyRequest<unknown, RequestQueryGet<BankAccountFindAttributes>, undefined, BankAccount[]>,
+    req: MyRequest<unknown, BankAccountAttributes, undefined, BankAccount[]>,
     res: Response,
     next: NextFunction,
   ) {
     try {
       const { clientId } = req.query;
-      const result = await AxiosRequest<BankAccount[], RequestQueryGet<BankAccountFindAttributes>>(
+      const result = await AxiosRequest<BankAccount[], BankAccountAttributes>(
         "http://localhost:5000/api/replication/bankAccounts",
         { clientId },
         process.argv[4],
@@ -59,7 +59,7 @@ class BankAccountController {
   }
 
   static async createBankAccount(
-    req: MyRequest<unknown, unknown, BankAccountCreationAttributes>,
+    req: MyRequest<unknown, unknown, BankAccountAttributes>,
     res: Response,
     next: NextFunction,
   ) {
@@ -88,7 +88,7 @@ class BankAccountController {
   }
 
   static async updateBankAccount(
-    req: MyRequest<BankAccountFindAttributes, undefined, BankAccountCreationAttributes>,
+    req: MyRequest<BankAccountAttributes, undefined, BankAccountAttributes>,
     res: Response,
     next: NextFunction,
   ) {

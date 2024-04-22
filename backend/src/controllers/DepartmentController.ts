@@ -1,5 +1,5 @@
 import ApiError from "../helpers/ApiErrors.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { Department } from "../models/Department.js";
 
 class DepartmentsController {
@@ -10,7 +10,7 @@ class DepartmentsController {
     ]);
   }
 
-  static async getDepartments(req: Request, res: Response, next: NextFunction) {
+  static async getDepartments(req: MyRequest, res: Response, next: NextFunction) {
     try {
       const departments = await Department.findAll();
       req.departmentList = departments;
@@ -21,7 +21,7 @@ class DepartmentsController {
     }
   }
 
-  static async getDepartmentByAPIKey(req: Request, res: Response, next: NextFunction) {
+  static async getDepartmentByAPIKey(req: MyRequest, res: Response, next: NextFunction) {
     try {
       const department = await Department.findOne({ where: { APIKey: req.APIKey } });
       if (!department) {
@@ -35,8 +35,11 @@ class DepartmentsController {
     }
   }
 
-  static async getDepartmentByDomain(req: Request, res: Response, next: NextFunction) {
+  static async getDepartmentByDomain(req: MyRequest, res: Response, next: NextFunction) {
     try {
+      if (!req.reqURL) {
+        return next(ApiError.notFound("Department URL not found"));
+      }
       const department = await Department.findOne({
         where: { domain: req.reqURL.substring(0, req.reqURL.indexOf("/api") + 4) },
       });
