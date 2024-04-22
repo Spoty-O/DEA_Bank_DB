@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { API } from '../services/APIService';
-import { AccountTransactionCreationAttributes, ApiError } from '@backend/types';
+import { AccountTransactionAttributes, ApiError } from '@backend/types';
 
 interface TransactionProps {
   bankAccountId: string;
@@ -19,7 +19,7 @@ const CreateTransaction: React.FC<TransactionProps> = ({ bankAccountId }) => {
   console.log(bankAccountId);
   const [createTransaction, { error }] = API.useCreateTransactionMutation();
   const [formData, setFormData] =
-    useState<AccountTransactionCreationAttributes>({
+    useState<AccountTransactionAttributes>({
       amount: 0,
       transactionType: '',
       bankAccountId,

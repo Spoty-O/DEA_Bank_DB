@@ -1,11 +1,11 @@
 import { Button, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { API } from '../services/APIService';
-import { ApiError, ClientCreationAttributes } from '@backend/types';
+import { ApiError, ClientAttributes } from '@backend/types';
 
 const CreateClient = () => {
   const [createClient, { error }] = API.useCreateClientMutation();
-  const [formData, setFormData] = useState<ClientCreationAttributes>({
+  const [formData, setFormData] = useState<ClientAttributes>({
     firstName: '',
     lastName: '',
     phone: '',

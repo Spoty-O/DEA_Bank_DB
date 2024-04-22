@@ -8,7 +8,6 @@ import {
   ApiError,
   BankAccountAttributes,
   ClientAttributes,
-  ClientFindByNameAttributes,
 } from '@backend/types';
 import ClientBankAccounts from './ClientBankAccounts';
 import BankAccountTransactions from './BankAccountTransactions';
@@ -22,7 +21,7 @@ const Clients = () => {
   const { data: clientsList } = API.useGetClientsQuery(page);
   const [findClients, { error: findError }] = API.useGetClientByNameMutation();
   const [findClientState, setFindClientState] =
-    React.useState<ClientFindByNameAttributes>({
+    React.useState<ClientAttributes>({
       firstName: '',
       lastName: '',
     });
@@ -110,11 +109,14 @@ const Clients = () => {
           )}
         </div>
       </div>
-      {client && (
+      {client && client.id && (
         // Получение баланса клиента
         <div className="flex gap-5 w-full flex-col xl:flex-row">
           <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
-            <ClientBankAccounts clientId={client.id} setState={setBankAccount} />
+            <ClientBankAccounts
+              clientId={client.id}
+              setState={setBankAccount}
+            />
           </Card>
           <div className="flex gap-3 flex-wrap md:flex-nowrap xl:flex-wrap 2xl:flex-nowrap">
             <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
@@ -141,23 +143,23 @@ const Clients = () => {
           </div>
         </div>
       )}
-      {bankAccount && (
+      {bankAccount && bankAccount.id && (
         // Добавление транзакции
-        <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
-          <Box sx={{ p: 2 }}>
-            <h3 className="flex justify-center font-bold mb-2 uppercase">
-              create transaction
-            </h3>
-            <CreateTransaction bankAccountId={bankAccount.id} />
-          </Box>
-        </Card>
-      )}
-      {bankAccount && (
-        // Получение списка транзакций по счету
-        <BankAccountTransactions
-          bankAccountId={bankAccount.id}
-          setState={setAccountTransaction}
-        />
+        <>
+          <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
+            <Box sx={{ p: 2 }}>
+              <h3 className="flex justify-center font-bold mb-2 uppercase">
+                create transaction
+              </h3>
+              <CreateTransaction bankAccountId={bankAccount.id} />
+            </Box>
+          </Card>
+          {/* // Получение списка транзакций по счету */}
+          <BankAccountTransactions
+            bankAccountId={bankAccount.id}
+            setState={setAccountTransaction}
+          />
+        </>
       )}
     </>
   );

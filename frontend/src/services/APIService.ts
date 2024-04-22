@@ -1,21 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   AccountTransactionAttributes,
-  AccountTransactionCreationAttributes,
   BankAccountAttributes,
-  BankAccountCreationAttributes,
   ClientAttributes,
-  ClientCreationAttributes,
-  ClientFindByNameAttributes,
 } from '@backend/types';
 
-console.log(process.env)
+console.log(process.env);
 
 export const API = createApi({
   reducerPath: 'baseAPI',
   baseQuery: fetchBaseQuery({
     baseUrl:
-      process.env.REACT_APP_SERVER_API_DOMEN + ':' + process.env.REACT_APP_SERVER_PORT + '/api',
+      process.env.REACT_APP_SERVER_API_DOMEN +
+      ':' +
+      process.env.REACT_APP_SERVER_PORT +
+      '/api',
   }),
   tagTypes: ['Clients', 'BankAccount', 'Transactions'],
   endpoints: (build) => ({
@@ -33,10 +32,7 @@ export const API = createApi({
     }),
 
     // Поиск клиента по имени и фамилии
-    getClientByName: build.mutation<
-      ClientFindByNameAttributes,
-      ClientFindByNameAttributes
-    >({
+    getClientByName: build.mutation<ClientAttributes, ClientAttributes>({
       query: (data) => ({
         url: `clients/find`,
         method: 'GET',
@@ -46,10 +42,7 @@ export const API = createApi({
     }),
 
     //создание клиента
-    createClient: build.mutation<
-      ClientCreationAttributes,
-      ClientCreationAttributes
-    >({
+    createClient: build.mutation<ClientAttributes, ClientAttributes>({
       query: (data) => ({
         url: 'clients',
         method: 'POST',
@@ -69,7 +62,10 @@ export const API = createApi({
     }),
 
     // Получение баланса клиента
-    getClientBankAccountsByClientId: build.query<BankAccountAttributes[], string>({
+    getClientBankAccountsByClientId: build.query<
+      BankAccountAttributes[],
+      string
+    >({
       query: (clientId) => ({
         url: 'bankAccounts',
         method: 'GET',
@@ -82,8 +78,8 @@ export const API = createApi({
 
     // Создание банковского счета
     createBankAccount: build.mutation<
-      BankAccountCreationAttributes,
-      BankAccountCreationAttributes
+      BankAccountAttributes,
+      BankAccountAttributes
     >({
       query: (data) => ({
         url: 'bankAccounts',
@@ -117,8 +113,8 @@ export const API = createApi({
 
     // Deposit transaction
     createTransaction: build.mutation<
-      AccountTransactionCreationAttributes,
-      AccountTransactionCreationAttributes
+      AccountTransactionAttributes,
+      AccountTransactionAttributes
     >({
       query: (data) => ({
         url: `transactions/${data.transactionType}`,
