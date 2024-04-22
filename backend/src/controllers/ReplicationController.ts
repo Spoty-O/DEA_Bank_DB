@@ -13,9 +13,9 @@ class ReplicationController {
       req.query.noReplicate = "true";
       const { firstName, lastName } = req.query;
       const replicationData = await Replication.findOne({
-        where: { firstName, lastName },
+        where: { firstName, lastName, recipientDepartmentId: req.recipientDepartment.id },
       });
-      if (replicationData?.recipientDepartmentId === req.recipientDepartment.id) {
+      if (replicationData) {
         return next(ApiError.conflict("User already added to your DB"));
       }
       req.reqURL = "/clients/find";
@@ -33,13 +33,13 @@ class ReplicationController {
   ) {
     try {
       req.query.noReplicate = "true";
-      const { clientId } = req.query;
-      const replicationData = await Replication.findOne({
-        where: { clientId },
-      });
-      if (replicationData?.recipientDepartmentId === req.recipientDepartment.id) {
-        return next(ApiError.conflict("User already added to your DB"));
-      }
+      // const { clientId } = req.query;
+      // const replicationData = await Replication.findOne({
+      //   where: { clientId, recipientDepartmentId: req.recipientDepartment.id },
+      // });
+      // if (replicationData) {
+      //   return next(ApiError.conflict("BankAccount already added to your DB"));
+      // }
       req.reqURL = "/bankAccounts";
       return next();
     } catch (error) {

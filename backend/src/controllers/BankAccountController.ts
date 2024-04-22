@@ -24,18 +24,16 @@ class BankAccountController {
   ) {
     try {
       const { clientId, noReplicate } = req.query;
-      const bankAccount = await BankAccount.findAll({ where: { clientId } });
-
-      if (!bankAccount) {
-        return next();
-      }
-      if (!bankAccount) {
+      let bankAccount = await BankAccount.findAll({ where: { clientId } });
+      if (!bankAccount[0]) {
         if (!noReplicate) {
+          console.log('okok')
           return next();
         }
         return next(ApiError.notFound("BankAccount not found"));
       }
       await BankAccount.update({ replicated: true }, { where: { clientId } });
+      bankAccount = await BankAccount.findAll({ where: { clientId } });
       return res.json(bankAccount);
     } catch (error) {
       // console.log(error);
@@ -55,10 +53,11 @@ class BankAccountController {
         { clientId },
         process.argv[4],
       );
+      console.log(result)
       if (result instanceof ApiError) {
         return next(result);
       }
-      console.log(result);
+      console.log(result, 'okokokok');
       return res.json(await BankAccount.bulkCreate(result.data));
     } catch (error) {
       console.log(error);
