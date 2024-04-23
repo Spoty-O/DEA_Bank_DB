@@ -1,8 +1,9 @@
 import ApiError from "../helpers/ApiErrors.js";
 import { Response, NextFunction } from "express";
 import { Department } from "../models/Department.js";
+import { AxiosResponse } from "axios";
 
-class DepartmentsController {
+class DepartmentController {
   static async initialize(): Promise<Department[]> {
     return await Department.bulkCreate([
       { address: "123 Main St", city: "New York", phone: "123-456-7890", domain: "http://localhost:5001/api" },
@@ -35,13 +36,18 @@ class DepartmentsController {
     }
   }
 
-  static async getDepartmentByDomain(req: MyRequest, res: Response, next: NextFunction) {
+  static async getDepartmentByDomain(
+    req: MyRequest<unknown, unknown, unknown, AxiosResponse>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      if (!req.reqURL) {
+      if (!req.data?.config.url) {
         return next(ApiError.notFound("Department URL not found"));
       }
+      const { url } = req.data.config;
       const department = await Department.findOne({
-        where: { domain: req.reqURL.substring(0, req.reqURL.indexOf("/api") + 4) },
+        where: { domain: url.substring(0, url.indexOf("/api") + 4) },
       });
       if (!department) {
         return next(ApiError.notFound("Department by domain not found"));
@@ -55,4 +61,4 @@ class DepartmentsController {
   }
 }
 
-export default DepartmentsController;
+export default DepartmentController;

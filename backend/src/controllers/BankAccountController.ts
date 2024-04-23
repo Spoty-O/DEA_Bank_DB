@@ -29,6 +29,20 @@ class BankAccountController {
       if (!bankAccount[0]) {
         return next(ApiError.notFound("BankAccounts not found"));
       }
+      // if (!client) {
+        //   if (serverRequest === "false" || !serverRequest) {
+          //     return next();
+          //   }
+          //   return next(ApiError.notFound("Client not found"));
+          // }
+          // if (serverRequest === "true") {
+            //   req.params.id = client.id;
+            //   const body = client.dataValues;
+            //   body.replicated = true;
+            //   req.body = body;
+            //   return next();
+            // }
+      console.log(bankAccount)
       return res.json(bankAccount);
     } catch (error) {
       // console.log(error);

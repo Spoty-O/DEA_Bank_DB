@@ -30,7 +30,7 @@ class ClientController {
   }
 
   static async getClientByName(
-    req: MyRequest<{ id: string }, TClientGetValidated, TClientCreateValidated>,
+    req: MyRequest<{ id: string }, TClientGetValidated, ClientAttributes>,
     res: Response,
     next: NextFunction,
   ) {
@@ -38,18 +38,19 @@ class ClientController {
       const { firstName, lastName, serverRequest } = req.query;
       const client = await Client.findOne({ where: { firstName, lastName } });
       if (!client) {
-        if (serverRequest === "true") {
-          return next(ApiError.notFound("Client not found"));
+        if (serverRequest === "false" || !serverRequest) {
+          return next();
         }
+        return next(ApiError.notFound("Client not found"));
+      }
+      if (serverRequest === "true") {
+        req.params.id = client.id;
+        const body = client.dataValues;
+        body.replicated = true;
+        req.body = body;
         return next();
       }
-      if (serverRequest) {
-        client.replicated = true;
-        req.body = client;
-        req.params.id = client.id;
-        next();
-      }
-      return res.json(client);
+      return res.json(client.dataValues);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting client"));
@@ -70,7 +71,7 @@ class ClientController {
       if (result instanceof ApiError) {
         return next(result);
       }
-      console.log(result);
+      console.log(result.data);
       req.body = result.data;
       return next();
     } catch (error) {
@@ -98,12 +99,11 @@ class ClientController {
       const { id } = req.params;
 
       if (!id) return next(ApiError.badRequest("clientId is required"));
-
-      const client = await Client.findByPk(id);
+      console.log(req.body, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+      let client = await Client.findByPk(id);
       if (!client) return next(ApiError.notFound("Client not found"));
-      await client.update(req.body.dataValues);
-
-      return res.json(client);
+      client = await client.update(req.body);
+      return res.json(client.dataValues);
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error updating client"));

@@ -43,11 +43,9 @@ interface AccountTransactionAttributes {
   replicated?: boolean;
 }
 
-type RequestParamsGet<T> = Partial<T>;
-
-type RequestQuery<K extends keyof T> = {
-  [K: string]: T[K];
-};
+interface RequestQuery {
+  serverRequest?: "true" | "false";
+}
 
 export {
   ClientAttributes,
@@ -55,7 +53,6 @@ export {
   AccountTransactionAttributes,
   DepartmentAttributes,
   ReplicationAttributes,
-  RequestQuery,
-  RequestParamsGet,
   ApiError,
+  RequestQuery,
 };

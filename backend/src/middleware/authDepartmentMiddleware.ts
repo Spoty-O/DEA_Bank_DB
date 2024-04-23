@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import ApiError from "../helpers/ApiErrors.js";
 
-const authDepartmentMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const authDepartmentMiddleware = async (req: MyRequest, res: Response, next: NextFunction) => {
   if (req.method === "OPTIONS") {
     next();
   }

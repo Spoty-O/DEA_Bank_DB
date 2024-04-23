@@ -10,7 +10,7 @@ const bodyValidation = (schema: ZodSchema) => (req: MyRequest, res: Response, ne
     if (error instanceof ZodError) {
       let errorMessages = "";
       error.issues.forEach((issue) => {
-        errorMessages += `Field <<${issue.path}>>: ${issue.message}`;
+        errorMessages += `Field "${issue.path}": ${issue.message}\n`;
       });
       return next(ApiError.badRequest(errorMessages));
     }

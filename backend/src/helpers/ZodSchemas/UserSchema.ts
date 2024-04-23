@@ -10,7 +10,7 @@ const zodUserGetSchema = Zod.object({
 const zodUserCreateSchema = Zod.object({
   firstName: Zod.string().min(3).max(50),
   lastName: Zod.string().min(3).max(50),
-  phone: Zod.string().regex(/^\d{3}-\d{3}-\d{4}$/),
+  phone: Zod.string().regex(/^\d{3}-\d{3}-\d{4}$/, 'Number must be like (123-123-1234)'),
 });
 
 type TClientGetValidated = Zod.infer<typeof zodUserGetSchema>;
