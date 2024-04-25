@@ -13,6 +13,7 @@ import {
 import { AccountTransaction } from "./AccountTransaction.js";
 import { Client } from "./Client.js";
 import { BankAccountAttributes } from "../types/types.js";
+import { BelongsToGetAssociationMixin } from "sequelize";
 
 @Table({
   timestamps: false,
@@ -31,14 +32,11 @@ export class BankAccount extends Model<BankAccountAttributes> {
   @Column(DataType.UUID)
   clientId!: string;
 
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  replicated!: boolean;
-
   @BelongsTo(() => Client)
   client!: Client;
 
   @HasMany(() => AccountTransaction, { onDelete: "CASCADE" })
   accountTransactions!: AccountTransaction[];
+
+  getClient!: BelongsToGetAssociationMixin<Client>;
 }

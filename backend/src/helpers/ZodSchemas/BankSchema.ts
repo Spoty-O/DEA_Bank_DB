@@ -1,10 +1,16 @@
 import Zod from "zod";
+import { BankAccountAttributes } from "../../types/types.js";
 
 const zodBankAccountGetSchema = Zod.object({
-  clientId: Zod.string(),
   serverRequest: Zod.string().optional().transform((value) => (value ? "true" : "false")),
 })
 
-type TBankAccountValidated = Zod.infer<typeof zodBankAccountGetSchema>;
+const zodBankAccountCreateSchema = Zod.object({
+  clientId: Zod.string(),
+  balance: Zod.number(),
+})
 
-export { zodBankAccountGetSchema, TBankAccountValidated };
+type TBankAccountGetValidated = Zod.infer<typeof zodBankAccountGetSchema>;
+type TBankAccountCreateValidated = Zod.infer<typeof zodBankAccountCreateSchema> & BankAccountAttributes;
+
+export { zodBankAccountGetSchema, TBankAccountGetValidated, zodBankAccountCreateSchema, TBankAccountCreateValidated };

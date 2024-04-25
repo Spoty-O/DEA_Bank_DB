@@ -2,6 +2,7 @@ import ApiError from "../helpers/ApiErrors.js";
 import { Response, NextFunction } from "express";
 import { Department } from "../models/Department.js";
 import { AxiosResponse } from "axios";
+import { ReplicationAttributes } from "../types/types.js";
 
 class DepartmentController {
   static async initialize(): Promise<Department[]> {
@@ -53,6 +54,25 @@ class DepartmentController {
         return next(ApiError.notFound("Department by domain not found"));
       }
       req.donorDepartment = department;
+      next();
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting departments"));
+    }
+  }
+
+  static async getDepartmentsByReplication(
+    req: MyRequest<unknown, unknown, unknown, ReplicationAttributes>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.data) {
+        return next(ApiError.internal("Replication data not found"));
+      }
+      const { donorDepartmentId } = req.data;
+      const departments = await Department.findAll({ where: { id: donorDepartmentId } });
+      req.departmentList = departments;
       next();
     } catch (error) {
       console.log(error);

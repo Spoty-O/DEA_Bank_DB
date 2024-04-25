@@ -24,11 +24,6 @@ export class AccountTransaction extends Model<AccountTransactionAttributes> {
   @Column(DataType.STRING(40))
   transactionType!: string;
 
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  replicated!: boolean;
-
   @ForeignKey(() => BankAccount)
   @Column(DataType.UUID)
   bankAccountId!: string;

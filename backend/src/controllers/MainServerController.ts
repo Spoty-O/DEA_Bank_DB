@@ -8,10 +8,14 @@ class MainServerController {
   //requestURL = "/clients/find/replication";
   static getFromDepartments =
     (requestURL: string) =>
-    async <Query extends RequestQuery>(req: MyRequest<unknown, Query, unknown, AxiosResponse>, res: Response, next: NextFunction) => {
+    async <Query extends RequestQuery>(
+      req: MyRequest<{ id?: string }, Query, unknown, AxiosResponse>,
+      res: Response,
+      next: NextFunction,
+    ) => {
       try {
-        const { query } = req;
-        query.serverRequest = "true"
+        const { query, params } = req;
+        query.serverRequest = "true";
         const requestsList: Promise<AxiosResponse | ApiError>[] = [];
         if (!req.departmentList || !req.recipientDepartment) {
           return next(ApiError.internal("Controllers don't save required data: departmentList or recipientDepartment"));
@@ -20,13 +24,13 @@ class MainServerController {
           if (department.id === req.recipientDepartment.id) {
             continue;
           }
-          requestsList.push(AxiosRequest(department.domain + requestURL, query));
+          requestsList.push(AxiosRequest(department.domain + requestURL, query, undefined, params.id));
         }
         const resultRequest = await Promise.any(requestsList);
         if (resultRequest instanceof ApiError) {
           return next(resultRequest);
         }
-        console.log(resultRequest.data)
+        console.log(resultRequest.data);
         req.data = resultRequest;
         res.json(resultRequest.data);
         return next();
