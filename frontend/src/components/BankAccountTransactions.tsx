@@ -18,7 +18,7 @@ const BankAccountTransactions: FC<TransactionsDataProps> = ({
 
   return (
     <div className="min-h-96">
-      <h2 className="text-2xl font-semibold">Bank accounts:</h2>
+      <h2 className="text-2xl font-semibold mb-3">Transactions:</h2>
       <TableComponent<AccountTransactionAttributes>
         list={bankAccount}
         setState={setState}

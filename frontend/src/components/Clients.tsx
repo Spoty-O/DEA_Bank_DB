@@ -55,6 +55,7 @@ const Clients = () => {
       <div className="flex gap-5 w-full flex-col xl:flex-row">
         <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
           <form className="flex flex-col gap-2" onSubmit={findHandler}>
+            <h2 className="text-2xl font-semibold">Users:</h2>
             <div className="flex w-full gap-3">
               <TextField
                 className="w-full"
@@ -146,14 +147,25 @@ const Clients = () => {
       {bankAccount && bankAccount.id && (
         // Добавление транзакции
         <>
-          <Card variant="outlined" sx={{ minWidth: 320, width: '100%' }}>
-            <Box sx={{ p: 2 }}>
-              <h3 className="flex justify-center font-bold mb-2 uppercase">
-                create transaction
-              </h3>
-              <CreateTransaction bankAccountId={bankAccount.id} />
-            </Box>
-          </Card>
+          <div className="flex justify-center">
+            <Card
+              variant="outlined"
+              sx={{
+                minWidth: 320,
+                width: '100%',
+                '@media (min-width:800px)': {
+                  width: 400,
+                },
+              }}
+            >
+              <Box sx={{ p: 2 }}>
+                <h3 className="flex justify-center font-bold mb-2 uppercase">
+                  create transaction
+                </h3>
+                <CreateTransaction bankAccountId={bankAccount.id} />
+              </Box>
+            </Card>
+          </div>
           {/* // Получение списка транзакций по счету */}
           <BankAccountTransactions
             bankAccountId={bankAccount.id}
