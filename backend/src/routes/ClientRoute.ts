@@ -9,6 +9,6 @@ clientRouter.get("/find", queryValidation(zodUserGetSchema), ClientController.ge
 clientRouter.get("/find/replication", queryValidation(zodUserGetSchema), ClientController.getClientByName, ClientController.updateClient);
 clientRouter.get("/", ClientController.getAllClients);
 clientRouter.post("/", bodyValidation(zodUserCreateSchema), ClientController.createClient);
-clientRouter.patch("/:id", bodyValidation(zodUserCreateSchema), ClientController.updateClient);
+clientRouter.patch("/:id", bodyValidation(zodUserCreateSchema), ClientController.updateClient, ClientController.updateReplicationsForClient);
 
 export default clientRouter;

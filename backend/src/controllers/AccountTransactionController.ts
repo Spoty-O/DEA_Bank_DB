@@ -4,7 +4,7 @@ import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { AccountTransactionAttributes } from "../types/types.js";
 import { TTransactionCreateValidated, TTransactionGetValidated } from "../helpers/ZodSchemas/TransactionSchema.js";
-import AxiosRequest from "../helpers/AxiosRequest.js";
+import { AxiosGetRequest } from "../helpers/AxiosRequest.js";
 import { Client } from "../models/Client.js";
 
 class AccountTransactionController {
@@ -55,7 +55,7 @@ class AccountTransactionController {
       if (!req.data?.id) {
         return next(ApiError.internal("Linked Client with transaction not found"));
       }
-      const result = await AxiosRequest<AccountTransaction[], { id: string }>(
+      const result = await AxiosGetRequest<AccountTransaction[], { id: string }>(
         `http://localhost:5000/api/replication/transactions/${bankAccountId}`,
         { id: req.data.id },
         process.argv[4],

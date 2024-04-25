@@ -18,6 +18,15 @@ mainServerRoutes.get(
   ReplicationController.createReplication,
 );
 
+mainServerRoutes.patch(
+  "/replication/client/:id",
+  authDepartmentMiddleware,
+  DepartmentController.getDepartmentByAPIKey,
+  ReplicationController.getReplicationInfo,
+  DepartmentController.getDepartmentsByReplication,
+  MainServerController.patchToDepartments("/clients"),
+);
+
 mainServerRoutes.get(
   "/replication/bankAccounts/:id",
   authDepartmentMiddleware,
@@ -25,6 +34,15 @@ mainServerRoutes.get(
   ReplicationController.getReplicationInfo,
   DepartmentController.getDepartmentsByReplication,
   MainServerController.getFromDepartments("/bankAccounts"),
+);
+
+mainServerRoutes.patch(
+  "/replication/bankAccounts/:id",
+  authDepartmentMiddleware,
+  DepartmentController.getDepartmentByAPIKey,
+  ReplicationController.getReplicationInfo,
+  DepartmentController.getDepartmentsByReplication,
+  MainServerController.patchToDepartments("/bankAccounts"),
 );
 
 mainServerRoutes.get(

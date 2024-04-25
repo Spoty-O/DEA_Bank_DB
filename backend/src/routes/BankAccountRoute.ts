@@ -6,6 +6,6 @@ const bankAccountRouter = Router();
 
 bankAccountRouter.get("/:clientId", queryValidation(zodBankAccountGetSchema), BankAccountController.getBankAccountByClientId, BankAccountController.getBankAccountFromMain, BankAccountController.createBankAccount);
 bankAccountRouter.post("/", BankAccountController.createBankAccount);
-bankAccountRouter.patch("/:id", BankAccountController.updateBankAccount);
+bankAccountRouter.patch("/:id", BankAccountController.updateBankAccount, BankAccountController.updateReplicationsForBankAccount);
 
 export default bankAccountRouter;

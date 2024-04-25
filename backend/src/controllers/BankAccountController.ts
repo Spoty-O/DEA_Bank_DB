@@ -2,8 +2,8 @@ import ApiError from "../helpers/ApiErrors.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { Response, NextFunction } from "express";
 import { Client } from "../models/Client.js";
-import { BankAccountAttributes } from "../types/types.js";
-import AxiosRequest from "../helpers/AxiosRequest.js";
+import { BankAccountAttributes, RequestQuery } from "../types/types.js";
+import { AxiosGetRequest, AxiosUpdateRequest } from "../helpers/AxiosRequest.js";
 import { TBankAccountGetValidated, TBankAccountCreateValidated } from "../helpers/ZodSchemas/BankSchema.js";
 
 class BankAccountController {
@@ -51,9 +51,9 @@ class BankAccountController {
       if (!bankAccount) {
         return next(ApiError.notFound("Bank account not found"));
       }
-      const client = await bankAccount.getClient()
-      req.data = client
-      return next()
+      const client = await bankAccount.getClient();
+      req.data = client;
+      return next();
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error getting bank account"));
@@ -67,7 +67,7 @@ class BankAccountController {
   ) {
     try {
       const { clientId } = req.params;
-      const result = await AxiosRequest<BankAccount[], { id: string }>(
+      const result = await AxiosGetRequest<BankAccount[], { id: string }>(
         `http://localhost:5000/api/replication/bankAccounts/${clientId}`,
         { id: clientId },
         process.argv[4],
@@ -103,21 +103,52 @@ class BankAccountController {
   }
 
   static async updateBankAccount(
-    req: MyRequest<{ id: string }, undefined, TBankAccountCreateValidated>,
+    req: MyRequest<{ id: string }, RequestQuery, TBankAccountCreateValidated, TBankAccountCreateValidated>,
     res: Response,
     next: NextFunction,
   ) {
     try {
       const { id } = req.params;
+      const { serverRequest } = req.query;
       let bankAccount = await BankAccount.findByPk(id);
       if (!bankAccount) {
         return next(ApiError.notFound("Bank account not found"));
       }
       bankAccount = await bankAccount.update(req.body);
+      req.data = bankAccount;
       res.json(bankAccount);
+      if (serverRequest === "false" || !serverRequest) {
+        next();
+      }
     } catch (error) {
       console.log(error);
       return next(ApiError.internal("Error updating bank account"));
+    }
+  }
+
+  static async updateReplicationsForBankAccount(
+    req: MyRequest<{ id: string }, unknown, unknown, TBankAccountCreateValidated>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      if (!req.data) {
+        return next(ApiError.notFound("Client for replications update not found"));
+      }
+      const result = await AxiosUpdateRequest<{ message: string }, { id: string }, TBankAccountCreateValidated>(
+        `http://localhost:5000/api/replication/bankAccounts/${id}`,
+        { id: req.data.clientId },
+        req.data,
+        process.argv[4],
+      );
+      if (result instanceof ApiError) {
+        return next(result);
+      }
+      return res.json(result.data);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error updating client"));
     }
   }
 }
