@@ -4,7 +4,7 @@ import { zodBankAccountGetSchema } from "../helpers/ZodSchemas/BankSchema.js";
 import queryValidation from "../middleware/queryValidationMiddleware.js";
 const bankAccountRouter = Router();
 
-bankAccountRouter.get("/", queryValidation(zodBankAccountGetSchema), BankAccountController.getBankAccountByClientId, BankAccountController.getBankAccountFromMain);
+bankAccountRouter.get("/:clientId", queryValidation(zodBankAccountGetSchema), BankAccountController.getBankAccountByClientId, BankAccountController.getBankAccountFromMain, BankAccountController.createBankAccount);
 bankAccountRouter.post("/", BankAccountController.createBankAccount);
 bankAccountRouter.patch("/:id", BankAccountController.updateBankAccount);
 

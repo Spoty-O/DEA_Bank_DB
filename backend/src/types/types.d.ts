@@ -30,7 +30,6 @@ interface BankAccountAttributes {
   id?: string;
   balance?: number;
   clientId: string;
-  replicated?: boolean;
 }
 
 interface AccountTransactionAttributes {
@@ -40,10 +39,10 @@ interface AccountTransactionAttributes {
   transactionType?: string;
   bankAccountId: string;
   recipientBankAccountId?: string;
-  replicated?: boolean;
 }
 
 interface RequestQuery {
+  id?: string;
   serverRequest?: "true" | "false";
 }
 

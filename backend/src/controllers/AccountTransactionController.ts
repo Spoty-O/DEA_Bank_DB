@@ -3,6 +3,9 @@ import { Response, NextFunction } from "express";
 import { AccountTransaction } from "../models/AccountTransaction.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { AccountTransactionAttributes } from "../types/types.js";
+import { TTransactionCreateValidated, TTransactionGetValidated } from "../helpers/ZodSchemas/TransactionSchema.js";
+import AxiosRequest from "../helpers/AxiosRequest.js";
+import { Client } from "../models/Client.js";
 
 class AccountTransactionController {
   async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
@@ -19,27 +22,82 @@ class AccountTransactionController {
     return await AccountTransaction.bulkCreate(accountTransactionsValues);
   }
 
-  async get_transactions(req: MyRequest<AccountTransactionAttributes>, res: Response, next: NextFunction) {
+  static async getTransactions(
+    req: MyRequest<{ bankAccountId: string }, TTransactionGetValidated>,
+    res: Response,
+    next: NextFunction,
+  ) {
     //добавить типизацию
     try {
       const { bankAccountId } = req.params;
-
-      if (!bankAccountId) {
-        return next(ApiError.badRequest("accountId are required"));
-      }
-
+      const { serverRequest } = req.query;
       const transactions = await AccountTransaction.findAll({ where: { bankAccountId } });
-      res.json(transactions);
+      if (!transactions[0]) {
+        if (serverRequest === "false" || !serverRequest) {
+          return next();
+        }
+        return next(ApiError.notFound("Transactions not found"));
+      }
+      return res.json(transactions);
     } catch (error) {
       console.log(error);
       return next(ApiError.badRequest("Ошибка получения транзакций!"));
     }
   }
 
-  async deposit(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
+  static async getTransactionsFromMain(
+    req: MyRequest<{ bankAccountId: string }, TTransactionGetValidated, AccountTransaction[], Client>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { bankAccountId } = req.params;
+      if (!req.data?.id) {
+        return next(ApiError.internal("Linked Client with transaction not found"));
+      }
+      const result = await AxiosRequest<AccountTransaction[], { id: string }>(
+        `http://localhost:5000/api/replication/transactions/${bankAccountId}`,
+        { id: req.data.id },
+        process.argv[4],
+      );
+      if (result instanceof ApiError) {
+        return next(result);
+      }
+      req.body = result.data;
+      return next();
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error getting client"));
+    }
+  }
+
+  static async createTransaction(
+    req: MyRequest<unknown, unknown, TTransactionCreateValidated | TTransactionCreateValidated[]>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let transactions: TTransactionCreateValidated | TTransactionCreateValidated[] | undefined = undefined;
+      if (req.body instanceof Array) {
+        transactions = await AccountTransaction.bulkCreate(req.body);
+      } else {
+        transactions = await AccountTransaction.create(req.body);
+      }
+      return res.json(transactions);
+    } catch (error) {
+      console.log(error);
+      return next(ApiError.internal("Error creating bank account"));
+    }
+  }
+
+  static async deposit(
+    req: MyRequest<undefined, undefined, AccountTransactionAttributes>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { bankAccountId, amount } = req.body;
-      console.log(1111111000, bankAccountId, amount)
+      console.log(1111111000, bankAccountId, amount);
       if (!bankAccountId || !amount) {
         return next(ApiError.badRequest("bankAccountId and amount are required"));
       }
@@ -51,9 +109,9 @@ class AccountTransactionController {
       if (!account) {
         return next(ApiError.badRequest("Account not found!"));
       }
-      console.log(111111111, account.balance)
+      console.log(111111111, account.balance);
       const resul = await account.update({ balance: Number(account.balance) + Number(amount) });
-      console.log(222222222, resul)
+      console.log(222222222, resul);
       await AccountTransaction.create({
         amount,
         date: new Date(),
@@ -69,7 +127,11 @@ class AccountTransactionController {
     }
   }
 
-  async withdraw(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
+  static async withdraw(
+    req: MyRequest<undefined, undefined, AccountTransactionAttributes>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { bankAccountId, amount } = req.body;
 
@@ -106,7 +168,11 @@ class AccountTransactionController {
     }
   }
 
-  async performTransfer(req: MyRequest<undefined, undefined, AccountTransactionAttributes>, res: Response, next: NextFunction) {
+  static async performTransfer(
+    req: MyRequest<undefined, undefined, AccountTransactionAttributes>,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       // Получаем данные из запроса
       const { bankAccountId, recipientBankAccountId, amount } = req.body;
@@ -173,7 +239,7 @@ class AccountTransactionController {
       });
 
       // Отправляем успешный ответ
-      res.json({ message: "Transaction successful" });
+      return res.json({ message: "Transaction successful" });
     } catch (error) {
       // Обрабатываем ошибку
       console.error("Transaction failed:", error);
@@ -182,4 +248,4 @@ class AccountTransactionController {
   }
 }
 
-export default new AccountTransactionController();
+export default AccountTransactionController;

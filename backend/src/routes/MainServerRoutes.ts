@@ -18,4 +18,22 @@ mainServerRoutes.get(
   ReplicationController.createReplication,
 );
 
+mainServerRoutes.get(
+  "/replication/bankAccounts/:id",
+  authDepartmentMiddleware,
+  DepartmentController.getDepartmentByAPIKey,
+  ReplicationController.getReplicationInfo,
+  DepartmentController.getDepartmentsByReplication,
+  MainServerController.getFromDepartments("/bankAccounts"),
+);
+
+mainServerRoutes.get(
+  "/replication/transactions/:id",
+  authDepartmentMiddleware,
+  DepartmentController.getDepartmentByAPIKey,
+  ReplicationController.getReplicationInfo,
+  DepartmentController.getDepartmentsByReplication,
+  MainServerController.getFromDepartments("/transactions"),
+);
+
 export default mainServerRoutes;

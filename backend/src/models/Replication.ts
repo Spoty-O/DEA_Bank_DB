@@ -2,12 +2,12 @@ import { AllowNull, Column, Model, Table, DataType, ForeignKey, BelongsTo } from
 import { Client } from "./Client.js";
 import { Department } from "./Department.js";
 import { BelongsToGetAssociationMixin } from "sequelize";
-import { ReplicationAttributes, ReplicationCreationAttributes } from "../types/types.js";
+import { ReplicationAttributes } from "../types/types.js";
 
 @Table({
   timestamps: false,
 })
-export class Replication extends Model<ReplicationAttributes, ReplicationCreationAttributes> {
+export class Replication extends Model<ReplicationAttributes> {
   @ForeignKey(() => Client)
   @AllowNull(false)
   @Column(DataType.UUID)

@@ -7,9 +7,9 @@ import ApiError from "./ApiErrors.js";
  * @param APIKey - API key for request
  * @type {(link: string, params: D, APIKey: string) => Promise<T | ApiError>}
  */
-export default async <T, D>(link: string, params: D, APIKey: string = ""): Promise<AxiosResponse<T> | ApiError> => {
+export default async <T, D>(link: string, params: D, APIKey: string = "", url: string = ''): Promise<AxiosResponse<T> | ApiError> => {
   try {
-    const result = await axios.get<T>(link, {
+    const result = await axios.get<T>(link + `/${url}`, {
       params: params,
       headers: {
         Authorization: "Basic " + APIKey,
