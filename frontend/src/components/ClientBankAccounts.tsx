@@ -5,19 +5,26 @@ import TableComponent from './TableComponent';
 
 interface BankAccountDataProps {
   clientId: string;
+  id?: string;
   setState: React.Dispatch<
     React.SetStateAction<BankAccountAttributes | undefined>
   >;
 }
 
-const BankAccount: FC<BankAccountDataProps> = ({ clientId, setState }) => {
-  const { data: BankAccount } =
+const BankAccount: FC<BankAccountDataProps> = ({ clientId, id, setState }) => {
+  const { data: bankAccount, error } =
     API.useGetClientBankAccountsByClientIdQuery(clientId);
 
   return (
     <>
       <h2 className="text-2xl font-semibold">Bank accounts:</h2>
-      <TableComponent list={BankAccount} setState={setState} />
+      {!error && bankAccount && (
+        <TableComponent
+          list={bankAccount}
+          setState={setState}
+          isActive={bankAccount.findIndex((c) => c.id === id)}
+        />
+      )}
     </>
   );
 };

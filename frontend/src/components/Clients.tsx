@@ -87,7 +87,13 @@ const Clients = () => {
             ) : null}
           </form>
           <div className="flex flex-col gap-5">
-            <TableComponent list={clientsList} setState={setClient} />
+            {clientsList && (
+              <TableComponent
+                list={clientsList}
+                setState={setClient}
+                isActive={clientsList.findIndex((c) => c.id === client?.id)}
+              />
+            )}
           </div>
         </Card>
         <div className="flex gap-3 flex-wrap md:flex-nowrap xl:flex-wrap 2xl:flex-nowrap">
@@ -117,6 +123,7 @@ const Clients = () => {
           <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
             <ClientBankAccounts
               clientId={client.id}
+              id={bankAccount?.id}
               setState={setBankAccount}
             />
           </Card>

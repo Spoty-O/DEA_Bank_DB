@@ -12,11 +12,13 @@ import { StyledTableCell, StyledTableRow } from '../utils/tableStyles';
 interface TableComponentProps<T extends object> {
   list: T[] | undefined; // Массив объектов типа T
   setState: React.Dispatch<React.SetStateAction<T | undefined>>; // Функция для обновления состояния
+  isActive?: number; // Индекс активного элемента
 }
 
 const TableComponent = <T extends object>({
   list,
   setState,
+  isActive,
 }: TableComponentProps<T>) => {
   // Если list пуст или не определен, возвращаем null
   if (!list || list.length === 0) return null;
@@ -24,7 +26,6 @@ const TableComponent = <T extends object>({
   // Определение заголовков таблицы по первому элементу массива
   const [firstItem] = list;
   const headers = Object.keys(firstItem);
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="Table">
@@ -39,7 +40,7 @@ const TableComponent = <T extends object>({
           {list.map((row, index) => (
             <StyledTableRow
               key={index}
-              className="cursor-pointer"
+              className={`cursor-pointer ${isActive === index ? '!bg-slate-300' : ''}`}
               onClick={() => setState(row)}
             >
               {Object.values(row).map((value, index) => (
