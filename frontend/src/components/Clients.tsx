@@ -34,6 +34,7 @@ const Clients = () => {
     console.log(accountTransaction);
     // очистка данных при смене клиента
     setBankAccount(undefined);
+    setAccountTransaction(undefined);
   }, [client]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

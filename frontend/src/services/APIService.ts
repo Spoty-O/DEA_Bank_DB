@@ -24,8 +24,7 @@ export const API = createApi({
         url: 'clients',
         method: 'GET',
         params: {
-          limit: 12,
-          offset: page * 12 - 12,
+          offset: page
         },
       }),
       providesTags: ['Clients'],
@@ -67,11 +66,8 @@ export const API = createApi({
       string
     >({
       query: (clientId) => ({
-        url: 'bankAccounts',
+        url: `bankAccounts/${clientId}`,
         method: 'GET',
-        params: {
-          clientId,
-        },
       }),
       providesTags: ['BankAccount'],
     }),
