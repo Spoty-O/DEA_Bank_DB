@@ -56,7 +56,12 @@ const Clients = () => {
       <div className="flex gap-5 w-full flex-col xl:flex-row">
         <Card className="flex flex-col gap-5 w-full p-5 min-w-[700px]">
           <form className="flex flex-col gap-2" onSubmit={findHandler}>
-            <h2 className="text-2xl font-semibold">Users:</h2>
+            <div className="flex justify-between">
+              <h2 className="text-2xl font-semibold">Users:</h2>
+              <h2 className="text-2xl font-semibold">
+                Department {process.env.REACT_APP_SERVER_PORT?.charAt(3)}
+              </h2>
+            </div>
             <div className="flex w-full gap-3">
               <TextField
                 className="w-full"
