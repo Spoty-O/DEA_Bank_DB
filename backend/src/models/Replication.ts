@@ -1,7 +1,6 @@
 import { AllowNull, Column, Model, Table, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { Client } from "./Client.js";
 import { Department } from "./Department.js";
-import { BelongsToGetAssociationMixin } from "sequelize";
 import { ReplicationAttributes } from "../types/types.js";
 
 @Table({
@@ -26,13 +25,15 @@ export class Replication extends Model<ReplicationAttributes> {
   @Column(DataType.INTEGER)
   recipientDepartmentId!: number;
 
+  @BelongsTo(() => Department, 'recipientDepartmentId')
+  recipientDepartment!: Department;
+
   @ForeignKey(() => Department)
   @AllowNull(false)
   @Column(DataType.INTEGER)
   donorDepartmentId!: number;
 
-  @BelongsTo(() => Department)
-  department!: Department;
+  @BelongsTo(() => Department, 'donorDepartmentId')
+  donorDepartment!: Department;
 
-  getDepartment!: BelongsToGetAssociationMixin<Department>;
 }

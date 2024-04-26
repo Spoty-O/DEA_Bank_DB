@@ -1,4 +1,4 @@
-import { AllowNull, Column, HasMany, Model, Table, DataType, Default } from "sequelize-typescript";
+import { AllowNull, Column, Model, Table, DataType, Default, BelongsToMany } from "sequelize-typescript";
 import { Replication } from "./Replication.js";
 import { DepartmentAttributes } from "../types/types.js";
 
@@ -27,6 +27,9 @@ export class Department extends Model<DepartmentAttributes> {
   @Column(DataType.UUID)
   APIKey!: string;
 
-  @HasMany(() => Replication, { onDelete: "CASCADE" })
-  replications!: Replication[];
+  @BelongsToMany(() => Department, () => Replication, 'recipientDepartmentId')
+  recipientReplications!: Department[];
+
+  @BelongsToMany(() => Department, () => Replication, 'donorDepartmentId' )
+  donorReplications!: Department[];
 }

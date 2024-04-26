@@ -8,7 +8,7 @@ import { AxiosGetRequest } from "../helpers/AxiosRequest.js";
 import { Client } from "../models/Client.js";
 
 class AccountTransactionController {
-  async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
+  static async initialize(bankAccounts: BankAccount[]): Promise<AccountTransaction[]> {
     const accountTransactionsValues: AccountTransactionAttributes[] = [];
     for (const bankAccount of bankAccounts) {
       accountTransactionsValues.push({
